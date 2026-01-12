@@ -1,0 +1,1382 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Jessie Math - 面積幾何實驗室</title>
+
+  <!-- ✅ 快取連結預覽（請放在 <head> 裡） -->
+  <meta name="description" content="© 2025–2026 Jessie Math 捷析老師. All rights reserved.">
+  <!-- ✅ LINE / FB 預覽用 -->
+  <meta property="og:title" content="Jessie Math - 面積幾何實驗室">
+  <meta property="og:description" content="© 2025–2026 Jessie Math 捷析老師. All rights reserved.">
+  <meta property="og:type" content="website">
+
+  <!-- ✅ 預覽圖片-->
+  <meta property="og:image" content="g5-u8-1.png">
+  <meta property="og:image:width" content="1024">
+  <meta property="og:image:height" content="1536">
+  <meta property="og:image:alt" content="Jessie Math 遊戲封面">
+
+  <!-- ✅ 有些平台會參考 -->
+  <link rel="image_src" href="g5-u8-1.png">
+
+  <!-- ✅ Twitter / X（可用同一張圖） -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Jessie Math - 面積幾何實驗室">
+  <meta name="twitter:description" content="© 2025–2026 Jessie Math 捷析老師. All rights reserved.">
+  <meta name="twitter:image" content="g5-u8-1.png">
+
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --base-bg: #fbf6e8;
+      --base-bg-2:#fff9ef;
+
+      --glass: rgba(255, 255, 255, 0.72);
+      --glass-border: rgba(15, 23, 42, 0.10);
+      --glass-heavy: rgba(255, 255, 255, 0.86);
+
+      --ink: #0f172a;
+      --muted: #475569;
+
+      --accent-cyan: #06b6d4;
+      --accent-indigo: #6366f1;
+      --accent-rose: #fb7185;
+
+      --good: #16a34a;
+      --bad: #e11d48;
+
+      --font-main: "Inter", "Noto Sans TC", system-ui, sans-serif;
+      --font-display: "Space Grotesk", "Noto Sans TC", sans-serif;
+
+      --radius-lg: 24px;
+      --radius-sm: 12px;
+
+      --brand-yellow: #ffbf00;
+    }
+
+    * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+
+    body {
+      margin: 0; color: var(--ink);
+      font-family: var(--font-main);
+      background-color: var(--base-bg);
+      background-image:
+        radial-gradient(at 10% 0%, rgba(251, 113, 133, 0.18) 0px, transparent 52%),
+        radial-gradient(at 100% 90%, rgba(99, 102, 241, 0.16) 0px, transparent 55%),
+        radial-gradient(at 0% 100%, rgba(6, 182, 212, 0.14) 0px, transparent 55%),
+        linear-gradient(180deg, var(--base-bg-2), var(--base-bg));
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(255, 255, 255, 0.78);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--glass-border);
+    }
+    .topbar-inner {
+      max-width: 1200px; margin: 0 auto;
+      padding: 14px 22px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px;
+    }
+    .brand { display: flex; align-items: center; gap: 14px; min-width: 0; }
+    .logo {
+      width: 56px; height: 56px;
+      border-radius: 999px;
+      background: transparent;
+      border: 4px solid var(--brand-yellow);
+      box-shadow: 0 14px 26px rgba(15,23,42,0.10);
+      display: grid; place-items: center;
+      flex: 0 0 auto;
+    }
+    .logo img{
+      width: 40px; height: 40px;
+      object-fit: contain;
+      display:block;
+    }
+    .brand-title{
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 30px;
+      letter-spacing: -0.02em;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    .nav { display: flex; gap: 12px; flex-wrap: wrap; justify-content: flex-end; }
+    .pill{
+      background: rgba(255,255,255,0.92);
+      border: 1px solid rgba(15,23,42,0.14);
+      color: var(--ink);
+      padding: 10px 16px;
+      border-radius: 999px;
+      font-size: 15px;
+      font-weight: 800;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+      box-shadow: 0 10px 20px rgba(15,23,42,0.06);
+    }
+    .pill i{ font-size: 16px; }
+    .pill:hover{
+      transform: translateY(-2px);
+      border-color: rgba(99,102,241,0.35);
+      box-shadow: 0 14px 26px rgba(15,23,42,0.10);
+    }
+    .pill.primary{
+      border-color: rgba(99,102,241,0.35);
+      box-shadow: 0 14px 28px rgba(99,102,241,0.18);
+    }
+
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 40px 24px; width: 100%; flex: 1 0 auto; }
+    .page { display: none; animation: fadeIn 0.45s ease-out; }
+    .page.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .panel {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 18px 40px rgba(15,23,42,0.07);
+    }
+
+    .grid2 { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 24px; }
+    @media (max-width: 900px) { .grid2 { grid-template-columns: 1fr; } }
+
+    h1, h2, h3 { font-family: var(--font-display); margin: 0; letter-spacing: -0.02em; }
+    .muted { color: var(--muted); font-size: 15px; line-height: 1.6; }
+
+    .btn {
+      appearance: none;
+      border: 1px solid var(--glass-border);
+      background: rgba(255,255,255,0.86);
+      color: var(--ink);
+      padding: 14px 24px; border-radius: var(--radius-sm);
+      font-weight: 700; cursor: pointer; font-family: var(--font-main);
+      display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+      transition: all 0.18s ease;
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 12px 20px rgba(15,23,42,0.10); border-color: rgba(6,182,212,0.35); }
+    .btn.brand { background: var(--accent-indigo); border: none; color: white; }
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    input {
+      background: rgba(255,255,255,0.86);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-sm);
+      padding: 14px;
+      color: var(--ink); font-size: 16px; outline: none; width: 100%;
+      transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+    input:focus { border-color: rgba(6,182,212,0.55); box-shadow: 0 0 0 4px rgba(6,182,212,0.10); }
+
+    .card {
+      background: rgba(255,255,255,0.70);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-sm); padding: 20px; cursor: pointer;
+      transition: all 0.25s ease; margin-bottom: 12px;
+    }
+    .card:hover, .card.active {
+      background: rgba(99, 102, 241, 0.10);
+      border-color: rgba(99,102,241,0.35);
+      transform: translateY(-1px);
+    }
+    .badge {
+      font-size: 11px; letter-spacing: 1px;
+      background: rgba(15,23,42,0.06);
+      padding: 4px 8px; border-radius: 6px;
+      color: var(--accent-cyan);
+      font-weight: 800;
+    }
+
+    .diffRow { display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap; }
+    .radio {
+      flex: 1; min-width: 120px;
+      border: 1px solid var(--glass-border); border-radius: var(--radius-sm);
+      padding: 16px; cursor: pointer; text-align: center; transition: 0.25s ease;
+      background: rgba(255,255,255,0.70);
+      font-weight: 800;
+    }
+    .radio:has(input:checked) {
+      border-color: rgba(6,182,212,0.55);
+      background: rgba(6, 182, 212, 0.10);
+    }
+    .radio input { display: none; }
+
+    .board { background: rgba(255,255,255,0.72); border-radius: var(--radius-sm); margin-top: 20px; overflow: hidden; border: 1px solid var(--glass-border); }
+    .boardHead { padding: 16px; background: rgba(15,23,42,0.04); font-family: var(--font-display); font-size: 14px; color: var(--muted); }
+    .list { list-style: none; padding: 0; margin: 0; }
+    .list li { padding: 12px 16px; border-bottom: 1px solid rgba(15,23,42,0.06); display: flex; justify-content: space-between; font-size: 14px; }
+
+    .hud {
+      display: flex; gap: 12px; margin-bottom: 14px; flex-wrap: wrap;
+    }
+    .stat {
+      background: rgba(255,255,255,0.78);
+      border: 1px solid var(--glass-border);
+      padding: 12px 18px; border-radius: var(--radius-sm);
+      display: flex; flex-direction: column; min-width: 120px;
+      flex: 1 1 140px;
+    }
+    .stat small { color: var(--muted); font-size: 11px; }
+    .stat .val { font-family: var(--font-display); font-size: 22px; font-weight: 800; color: var(--accent-indigo); }
+
+    .gameBar{
+      display:flex; gap:10px; flex-wrap:wrap; margin: 8px 0 18px;
+    }
+    .gameBar .btn{ padding: 12px 16px; flex: 1 1 160px; }
+    .btn.danger{ color: var(--bad); border-color: rgba(225,29,72,0.22); }
+    .btn.danger:hover{ border-color: rgba(225,29,72,0.35); }
+
+    .playArea {
+      background: rgba(255,255,255,0.78);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-sm); position: relative; overflow: hidden;
+    }
+    #stage { position: relative; aspect-ratio: 700 / 360; cursor: crosshair; }
+    #drawCanvas { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: none; }
+
+    .lv2Info {
+      background: rgba(15,23,42,0.04);
+      border: 1px solid rgba(15,23,42,0.06);
+      border-radius: var(--radius-sm);
+      padding: 18px; margin-bottom: 14px; display: none; align-items: center; gap: 24px;
+      flex-wrap: wrap;
+    }
+    .kv { display: flex; flex-direction: column; }
+    .kv .label { font-size: 11px; color: var(--muted); }
+    .kv .num { font-size: 24px; font-family: var(--font-display); font-weight: 900; color: var(--accent-rose); }
+
+    .formula {
+      background: rgba(255,255,255,0.72);
+      border: 1px solid rgba(15,23,42,0.06);
+      padding: 16px; border-radius: var(--radius-sm);
+      font-family: 'Space Grotesk', var(--font-main);
+      font-size: 14px; color: var(--accent-indigo); margin: 14px 0;
+    }
+
+    .hint-line { position: absolute; pointer-events: none; border-radius: 2px; }
+    .hint-bad { background: rgba(225, 29, 72, 0.10); border: 1px solid rgba(225,29,72,0.40); }
+    .hint-good { background: rgba(22, 163, 74, 0.10); border: 1px solid rgba(22,163,74,0.40); }
+
+    .mask {
+      position: fixed; inset: 0; display: none; align-items: center; justify-content: center;
+      background: rgba(15,23,42,0.35); backdrop-filter: blur(10px); z-index: 200;
+      padding: 16px;
+    }
+    .mask.show { display: flex; }
+    .modal {
+      background: rgba(255,255,255,0.92);
+      border: 1px solid var(--glass-border);
+      padding: 38px; border-radius: var(--radius-lg); text-align: center; max-width: 430px; width: 100%;
+      box-shadow: 0 18px 40px rgba(15,23,42,0.16);
+    }
+
+    .chipRow { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+    .chip {
+      font-size: 12px;
+      background: rgba(15,23,42,0.04);
+      border: 1px solid rgba(15,23,42,0.06);
+      padding: 6px 12px; border-radius: 999px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    footer { margin-top: 22px; padding: 0 24px 28px; flex: 0 0 auto; }
+    .footer-pill{
+      max-width: 1100px;
+      margin: 0 auto;
+      background: rgba(255,255,255,0.78);
+      border: 1px solid rgba(15,23,42,0.08);
+      border-radius: 999px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      box-shadow: 0 16px 34px rgba(15,23,42,0.08);
+    }
+    .footer-left, .footer-right{
+      display: flex; align-items: center; gap: 10px;
+      min-width: 0;
+    }
+    .footer-dot{
+      width: 10px; height: 10px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-indigo));
+      box-shadow: 0 10px 18px rgba(99,102,241,0.18);
+      flex: 0 0 auto;
+    }
+    .footer-copy{
+      font-size: 12px; color: var(--muted); font-weight: 700;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .footer-icon{
+      width: 28px; height: 28px; border-radius: 10px;
+      background: rgba(99,102,241,0.10);
+      display: grid; place-items: center;
+      border: 1px solid rgba(99,102,241,0.20);
+      color: var(--accent-indigo);
+      flex: 0 0 auto;
+    }
+    .footer-tagline{
+      font-size: 12px; color: var(--ink); font-weight: 900;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    @media (max-width: 980px){
+      .topbar-inner{ padding: 12px 16px; }
+      .wrap{ padding: 28px 16px; }
+      .panel{ padding: 22px; }
+      .pill{ padding: 10px 14px; font-size: 14px; }
+      .brand-title{ font-size: 26px; }
+      .logo{ width: 52px; height: 52px; }
+      .logo img{ width: 38px; height: 38px; }
+    }
+    @media (max-width: 560px){
+      .brand-title{ font-size: 22px; }
+      .logo{ width: 48px; height: 48px; border-width: 4px; }
+      .logo img{ width: 34px; height: 34px; }
+      .panel{ padding: 18px; border-radius: 20px; }
+      .gameBar .btn{ flex: 1 1 100%; }
+      .hud .stat{ min-width: 0; flex: 1 1 45%; }
+      footer{ padding: 0 16px 24px; }
+      .footer-pill{ border-radius: 20px; }
+      .footer-copy, .footer-tagline{ white-space: normal; }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="logo">
+          <img src="JESSIEMATH-Q.png" alt="Jessie Math" />
+        </div>
+        <div class="brand-title">Jessie Math</div>
+      </div>
+
+      <nav class="nav">
+        <a class="pill" href="https://jessiemath0703-chu.github.io/website2/" target="_blank" rel="noopener">
+          <i class="fa-solid fa-house"></i> 首頁
+        </a>
+        <a class="pill" href="https://jessiemath0703-chu.github.io/Game-Lobby/" target="_blank" rel="noopener">
+          <i class="fa-solid fa-gamepad"></i> 遊戲大廳
+        </a>
+        <a class="pill primary" href="https://jessiemath0703-chu.github.io/Game-Lobby/#g5-u8" target="_blank" rel="noopener">
+          <i class="fa-solid fa-rotate-left"></i> 五年級面積
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section id="page-intro" class="page active">
+      <div class="grid2">
+        <div class="panel">
+          <h1 style="font-size:32px;">幾何面積互動大挑戰</h1>
+          <p class="muted" style="margin-top:16px;">
+            把圖形拆解、重構，畫線、拖曳、計算——每一步都像在解鎖一個小宇宙。
+          </p>
+          <div class="chipRow">
+            <span class="chip">倒數：60 秒</span>
+            <span class="chip">連擊加成</span>
+            <span class="chip">自動存檔排行</span>
+          </div>
+          <div style="margin-top:28px; padding: 22px; background: rgba(255,255,255,0.72); border:1px solid rgba(15,23,42,0.06); border-radius: var(--radius-sm);">
+            <h3 style="font-size:14px; color: var(--accent-indigo); margin-bottom:10px;">實驗手冊</h3>
+            <p class="muted" style="font-size:13px; margin:0;">
+              • 第一關：畫出「最高點往下」的高（直線模式）<br>
+              • 第二關：已知面積與底，反推高度<br>
+              • 第三關：看圖算面積（會顯示圖形）
+            </p>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2>身分設定</h2>
+          <p class="muted" style="margin-top:8px;">請輸入姓名（必填）</p>
+
+          <div style="margin-top:18px;">
+            <input id="nameInput" maxlength="12" placeholder="例如：捷析老師 / Jessie" />
+            <div id="nameErr" style="display:none; margin-top:10px; color: var(--bad); font-weight:800; font-size:13px;">
+              需要先輸入姓名才能啟動～
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-top:16px;">
+            <button class="btn brand" id="btnIntroGo" disabled>啟動實驗室</button>
+            <button class="btn" id="btnIntroClear">清除</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="page-menu" class="page">
+      <div class="grid2">
+        <div class="panel">
+          <h2 style="margin-bottom:24px;">選擇挑戰關卡</h2>
+          <div class="levels" id="levelCards">
+            <div class="card" data-lv="1">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span style="font-weight:800;">關卡 01：垂直感知</span>
+                <span class="badge">直線</span>
+              </div>
+              <p class="muted" style="font-size:13px; margin-top:8px;">從圖形最高點往下拉一條直線，判定才算數。</p>
+            </div>
+            <div class="card" data-lv="2">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span style="font-weight:800;">關卡 02：邏輯推導</span>
+                <span class="badge">拖曳</span>
+              </div>
+              <p class="muted" style="font-size:13px; margin-top:8px;">已知面積與底，反推正確高度。</p>
+            </div>
+            <div class="card" data-lv="3">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span style="font-weight:800;">關卡 03：快速計算</span>
+                <span class="badge">看圖</span>
+              </div>
+              <p class="muted" style="font-size:13px; margin-top:8px;">會顯示圖形＋數據，直接算面積。</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2>難易度 / 速度</h2>
+          <div class="diffRow">
+            <label class="radio">
+              <input type="radio" name="diff" value="E" checked>
+              <div style="font-size:13px;">簡單</div>
+            </label>
+            <label class="radio">
+              <input type="radio" name="diff" value="N">
+              <div style="font-size:13px;">普通</div>
+            </label>
+            <label class="radio">
+              <input type="radio" name="diff" value="H">
+              <div style="font-size:13px;">快速</div>
+            </label>
+          </div>
+
+          <div class="board">
+            <div class="boardHead">排行榜｜前 10 名</div>
+            <ul class="list" id="lbList"></ul>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr; gap:12px; margin-top:22px;">
+            <button class="btn brand" id="btnPlay" disabled>進入關卡</button>
+            <button class="btn" id="btnBackIntro">返回</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="page-game" class="page">
+      <div class="hud">
+        <div class="stat"><small>玩家</small><div class="val" id="hudName">—</div></div>
+        <div class="stat"><small>時間</small><div class="val" id="hudTime">60</div></div>
+        <div class="stat"><small>分數</small><div class="val" id="hudScore">0</div></div>
+        <div class="stat"><small>連擊</small><div class="val" id="hudCombo">0</div></div>
+        <div class="stat"><small>倍率</small><div class="val" id="hudMult">x1.0</div></div>
+      </div>
+
+      <div class="gameBar">
+        <button class="btn" id="btnPause"><i class="fa-solid fa-pause"></i> 暫停</button>
+        <button class="btn" id="btnRestart"><i class="fa-solid fa-rotate-right"></i> 重來</button>
+        <button class="btn danger" id="btnBackMenu"><i class="fa-solid fa-house"></i> 回主選關</button>
+      </div>
+
+      <div class="panel" style="padding:16px;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:18px; padding:0 10px; gap:12px;">
+          <div style="min-width:0;">
+            <h3 id="qTitle" style="color:var(--accent-indigo);">載入中...</h3>
+            <p id="qSubtitle" class="muted" style="font-size:13px; margin:6px 0 0;"></p>
+          </div>
+          <div class="badge" id="tagGoal">任務</div>
+        </div>
+
+        <div class="playArea">
+          <div id="stage">
+            <div id="svgHost"></div>
+            <canvas id="drawCanvas"></canvas>
+          </div>
+        </div>
+
+        <div style="padding:16px;">
+          <div class="lv2Info" id="lv2Info">
+            <div class="kv"><span class="label">面積</span><span class="num" id="lv2Area">—</span></div>
+            <div class="kv"><span class="label">底</span><span class="num" id="lv2Base">—</span></div>
+            <div style="margin-left:auto;"><span class="badge">拖曳同步高度</span></div>
+          </div>
+
+          <div id="lv2Hud" style="display:none; font-family:var(--font-display); margin-bottom:10px; color: var(--accent-cyan); font-weight:900;">
+            目前高度：<span id="lv2CurH">0</span>
+          </div>
+
+          <div class="formula" id="workPad">提示會顯示在這裡。</div>
+
+          <div style="display:flex; gap:12px; flex-wrap:wrap;" id="answerRow">
+            <input id="ansInput" type="text" placeholder="請輸入答案..." style="flex:1; min-width: 180px;" />
+            <button class="btn brand" id="btnSubmit" style="flex: 0 0 auto;">送出</button>
+          </div>
+
+          <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap;">
+            <button class="btn" id="btnShowAns" style="font-size:12px; padding:8px 14px;">顯示示範</button>
+            <button class="btn" id="btnClearDraw" style="font-size:12px; padding:8px 14px;">重設畫線</button>
+          </div>
+
+          <div class="feedback" id="feedback" style="margin-top:16px; padding:12px; border-radius:10px; display:none; font-weight:900;"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="mask" id="pauseMask">
+    <div class="modal">
+      <h2 style="color:var(--accent-indigo); margin:0;">已暫停</h2>
+      <p class="muted" style="margin: 16px 0 22px;">先喝口水，回來再把題目秒了。</p>
+      <button class="btn brand" id="btnResume">繼續</button>
+    </div>
+  </div>
+
+  <div class="mask" id="endMask">
+    <div class="modal">
+      <h2 style="color:var(--accent-indigo); margin:0;">挑戰完成</h2>
+      <div id="endText" style="margin: 18px 0 22px; font-size:18px; font-weight:900;"></div>
+      <div style="display:grid; gap:12px;">
+        <button class="btn brand" id="btnEndAgain">再玩一次</button>
+        <button class="btn" id="btnEndToMenu">返回選單</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-pill">
+      <div class="footer-left">
+        <div class="footer-dot" aria-hidden="true"></div>
+        <div class="footer-copy">© 2025–2026 Jessie Math 捷析老師. All rights reserved.</div>
+      </div>
+      <div class="footer-right">
+        <div class="footer-icon" aria-hidden="true"><i class="fas fa-compass"></i></div>
+        <div class="footer-tagline">數學不迷路，Jessie 帶你走向理解。</div>
+      </div>
+    </div>
+  </footer>
+
+<script>
+(() => {
+  const $ = (s)=>document.querySelector(s);
+  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+  const pick=(arr)=>arr[Math.floor(Math.random()*arr.length)];
+  const randInt=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+  const escapeHtml = (s)=>String(s).replace(/[&<>"']/g, m => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+  }[m]));
+  const pretty=(x)=>{
+    const n = Math.round(Number(x)*10)/10;
+    return Number.isInteger(n) ? String(n) : n.toFixed(1).replace(/\.0$/,"");
+  };
+
+  const pages = ["page-intro","page-menu","page-game"];
+  function goPage(id){
+    pages.forEach(p=>document.getElementById(p)?.classList.remove("active"));
+    document.getElementById(id)?.classList.add("active");
+    window.scrollTo({top:0, behavior:"smooth"});
+    if(id==="page-game"){
+      requestAnimationFrame(()=>{
+        resizeCanvasToStage();
+        redrawOverlay();
+      });
+    }
+  }
+
+  const LB_PREFIX="JM_AREA_ALL_V3_";
+  const keyLB = (lv, df)=> `${LB_PREFIX}L${lv}_${df}`;
+  const safeParse = (s, fallback)=>{ try{return JSON.parse(s);}catch(e){return fallback;} };
+  const readLB = (lv, df)=> safeParse(localStorage.getItem(keyLB(lv, df))||"[]", []);
+  const writeLB = (lv, df, list)=> localStorage.setItem(keyLB(lv, df), JSON.stringify(list.slice(0,10)));
+
+  function diffCfg(df){
+    if(df==="E") return { tick: 250, nextDelay: 650, angleTol: 18, edgeTol: 18, tolNum: 0.12, min:2, max:30 };
+    if(df==="N") return { tick: 200, nextDelay: 520, angleTol: 12, edgeTol: 14, tolNum: 0.08, min:5, max:60 };
+    return { tick: 150, nextDelay: 400, angleTol: 8, edgeTol: 12, tolNum: 0.06, min:10,max:99 };
+  }
+
+  const state = {
+    name:"",
+    level:null,
+    diff:"E",
+    cfg: diffCfg("E"),
+    running:false,
+    paused:false,
+
+    time:60,
+    score:0,
+    combo:0,
+    correct:0,
+    wrong:0,
+
+    q:null,
+    answer:null,
+    mode:"NUM",
+    showAns:false,
+
+    stroke:[],
+    dragTargetInt: 0,
+    dragCurInt: 0,
+
+    timer:null
+  };
+
+  function multFor(combo){
+    if(combo>=15) return 2.0;
+    if(combo>=12) return 1.8;
+    if(combo>=9) return 1.6;
+    if(combo>=6) return 1.4;
+    if(combo>=3) return 1.2;
+    return 1.0;
+  }
+
+  const canvas = $("#drawCanvas");
+  const ctx = canvas?.getContext("2d");
+
+  function getViewBox(){
+    const q = state.q || {};
+    return { W: q.W || 700, H: q.H || 360 };
+  }
+  function viewToPx(v){
+    const stage = $("#stage");
+    const {W,H} = getViewBox();
+    if(!stage) return {x:0,y:0};
+    const sx = stage.clientWidth / W;
+    const sy = stage.clientHeight / H;
+    return { x: v.x * sx, y: v.y * sy };
+  }
+  function pxToView(px){
+    const stage = $("#stage");
+    if(!stage) return {x:0,y:0};
+    const r = stage.getBoundingClientRect();
+    const {W,H} = getViewBox();
+    return { x: (px.x / r.width) * W, y: (px.y / r.height) * H };
+  }
+  function pointerPosPx(e){
+    const stage = $("#stage");
+    const r = stage.getBoundingClientRect();
+    return {x:(e.clientX - r.left), y:(e.clientY - r.top)};
+  }
+
+  function resizeCanvasToStage(){
+    if(!canvas || !ctx) return;
+    const stage = $("#stage");
+    if(!stage) return;
+    const rect = stage.getBoundingClientRect();
+    if(rect.width <= 2 || rect.height <= 2) return;
+
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = Math.floor(rect.width * dpr);
+    canvas.height = Math.floor(rect.height * dpr);
+    canvas.style.width = rect.width+"px";
+    canvas.style.height = rect.height+"px";
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    redrawOverlay();
+  }
+
+  window.addEventListener("resize", ()=>{
+    if($("#page-game")?.classList.contains("active")) resizeCanvasToStage();
+  });
+
+  function clearStroke(){
+    state.stroke = [];
+    redrawOverlay();
+  }
+
+  function redrawOverlay(){
+    if(!canvas || !ctx) return;
+    const stage = $("#stage");
+    if(!stage) return;
+    const w = stage.clientWidth;
+    const h = stage.clientHeight;
+    ctx.clearRect(0,0,w,h);
+
+    if(state.stroke.length >= 2){
+      ctx.lineWidth = 3;
+      ctx.lineCap = "round";
+      ctx.strokeStyle = "#6366f1";
+      const a = viewToPx(state.stroke[0]);
+      const b = viewToPx(state.stroke[state.stroke.length-1]);
+      ctx.beginPath();
+      ctx.moveTo(a.x, a.y);
+      ctx.lineTo(b.x, b.y);
+      ctx.stroke();
+    }
+
+    if(state.showAns && state.q && state.q.solutionLine){
+      const L = state.q.solutionLine;
+      const a = viewToPx({x:L.x1, y:L.y1});
+      const b = viewToPx({x:L.x2, y:L.y2});
+      ctx.lineWidth = 3;
+      ctx.setLineDash([6,6]);
+      ctx.strokeStyle = "#16a34a";
+      ctx.beginPath();
+      ctx.moveTo(a.x, a.y);
+      ctx.lineTo(b.x, b.y);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+  }
+
+  let hintEl = null;
+  function removeLiveHint(){ if(hintEl){ hintEl.remove(); hintEl=null; } }
+  function angleDeg(ax,ay,bx,by){
+    return Math.atan2(by-ay, bx-ax) * 180 / Math.PI;
+  }
+  function showLiveHintRect(cls, p1, p2){
+    const stage = $("#stage");
+    if(!stage || !hintEl){
+      if(stage){
+        hintEl=document.createElement("div");
+        stage.appendChild(hintEl);
+      }
+    }
+    if(!hintEl) return;
+    hintEl.className="hint-line "+cls;
+    const a = viewToPx(p1), b = viewToPx(p2);
+    const x=Math.min(a.x,b.x), y=Math.min(a.y,b.y);
+    const ww=Math.abs(a.x-b.x)+4, hh=Math.abs(a.y-b.y)+4;
+    hintEl.style.left = (x-2)+"px"; hintEl.style.top = (y-2)+"px";
+    hintEl.style.width = Math.max(ww,4)+"px"; hintEl.style.height = Math.max(hh,4)+"px";
+  }
+  function liveAngleHint(){
+    if(state.level!==1 || state.mode!=="DRAW" || state.stroke.length<2) { removeLiveHint(); return; }
+    const p1=state.stroke[0], p2=state.stroke[state.stroke.length-1];
+    const ang = Math.abs(angleDeg(p1.x,p1.y,p2.x,p2.y));
+    const angN = Math.min(Math.abs(ang), Math.abs(180-ang));
+    const diff = Math.abs(90-angN);
+    let cls="hint-bad";
+    if(diff < state.cfg.angleTol*0.65) cls="hint-good";
+    showLiveHintRect(cls, p1, p2);
+  }
+
+  function setFeedback(text, type){
+    const el = $("#feedback");
+    if(!el) return;
+    if(!text){ el.style.display="none"; return; }
+    el.style.display="block";
+    el.textContent = text;
+    el.style.background = type==="good" ? "rgba(22,163,74,0.10)" : "rgba(225,29,72,0.10)";
+    el.style.border = "1px solid " + (type==="good" ? "rgba(22,163,74,0.22)" : "rgba(225,29,72,0.22)");
+    el.style.color = type==="good" ? "var(--good)" : "var(--bad)";
+  }
+
+  function renderHUD(){
+    $("#hudName").textContent = state.name || "—";
+    $("#hudTime").textContent = state.time;
+    $("#hudScore").textContent = state.score;
+    $("#hudCombo").textContent = state.combo;
+    $("#hudMult").textContent = "x"+multFor(state.combo).toFixed(1);
+
+    if(state.level===2){
+      $("#lv2Hud").style.display="block";
+      $("#lv2CurH").textContent = state.dragCurInt;
+    } else {
+      $("#lv2Hud").style.display="none";
+    }
+  }
+
+  let selectedLv = null;
+  function renderMenuLB(){
+    const lbList = $("#lbList");
+    if(!selectedLv){
+      lbList.innerHTML = "<li><span>請先選擇模組</span><span>—</span></li>";
+      return;
+    }
+    const df = document.querySelector("input[name='diff']:checked")?.value || "E";
+    const list = readLB(selectedLv, df);
+    lbList.innerHTML = list.length
+      ? list.map((it, idx)=>`<li><span>${idx+1}. ${escapeHtml(it.name)}</span><span>${it.score}</span></li>`).join("")
+      : "<li><span>目前沒有紀錄</span><span>—</span></li>";
+  }
+
+  function svgWrap(inner, w=700, h=360){
+    return `<svg viewBox="0 0 ${w} ${h}" width="100%" height="100%" preserveAspectRatio="xMidYMid meet">${inner}</svg>`;
+  }
+  function drawGrid(w=700,h=360){
+    let l = "";
+    for(let x=50;x<w;x+=50) l += `<line x1="${x}" y1="0" x2="${x}" y2="${h}" stroke="rgba(15,23,42,0.06)" stroke-width="1"/>`;
+    for(let y=50;y<h;y+=50) l += `<line x1="0" y1="${y}" x2="${w}" y2="${y}" stroke="rgba(15,23,42,0.06)" stroke-width="1"/>`;
+    return l;
+  }
+
+  function distPointToSegment(px,py,x1,y1,x2,y2){
+    const vx=x2-x1, vy=y2-y1, wx=px-x1, wy=py-y1;
+    const c1 = vx*wx + vy*wy;
+    if(c1<=0) return Math.hypot(px-x1, py-y1);
+    const c2 = vx*vx + vy*vy;
+    if(c2<=c1) return Math.hypot(px-x2, py-y2);
+    const t = c1/c2;
+    return Math.hypot(px-(x1+t*vx), py-(y1+t*vy));
+  }
+
+  function buildQuestion(){
+    state.showAns=false;
+    clearStroke();
+    removeLiveHint();
+    $("#ansInput").value="";
+    setFeedback("", "");
+
+    if(state.level===1) buildLv1();
+    else if(state.level===2) buildLv2();
+    else buildLv3();
+
+    updateAnswerRowUI();
+    renderHUD();
+    requestAnimationFrame(()=>resizeCanvasToStage());
+  }
+
+  function updateAnswerRowUI(){
+    const input = $("#ansInput"), btn = $("#btnSubmit");
+    $("#lv2Info").style.display = state.level===2 ? "flex" : "none";
+
+    if(state.mode==="DRAW" || state.mode==="DRAG"){
+      input.style.display="none";
+      btn.textContent = state.mode==="DRAW" ? "判定" : "同步";
+    } else {
+      input.style.display="block";
+      btn.textContent = "送出";
+    }
+
+    $("#btnShowAns").style.display = (state.level===1) ? "inline-flex" : "none";
+    $("#btnClearDraw").style.display = (state.level===1) ? "inline-flex" : "none";
+  }
+
+  function buildLv1(){
+    state.mode="DRAW";
+    $("#tagGoal").textContent="畫出高";
+    $("#workPad").textContent = "規則：必須「從圖形最高點往下」畫一條直線，且垂直於粉色底邊。";
+
+    const type = pick(["para","tri","trap"]);
+    const W=700,H=360; let base, topEdge=null, apex=null, polyPts=null, solutionLine=null;
+
+    if(type==="para"){
+      const x1=170,y1=270, x2=520,y2=270, skew=70, height=120;
+      const A={x:x1,y:y1}, B={x:x2,y:y1}, C={x:x2+skew,y:y1-height}, D={x:x1+skew,y:y1-height};
+      polyPts=[A,B,C,D];
+      base={x1:A.x,y1:A.y,x2:B.x,y2:B.y};
+      topEdge={x1:D.x,y1:D.y,x2:C.x,y2:C.y};
+      solutionLine={x1:300,y1:y1,x2:300,y2:y1-height};
+    } else if(type==="trap"){
+      const A={x:160,y:280}, B={x:540,y:280}, C={x:450,y:150}, D={x:250,y:150};
+      polyPts=[A,B,C,D];
+      base={x1:A.x,y1:A.y,x2:B.x,y2:B.y};
+      topEdge={x1:D.x,y1:D.y,x2:C.x,y2:C.y};
+      solutionLine={x1:350,y1:280,x2:350,y2:150};
+    } else {
+      const A={x:200,y:280}, B={x:520,y:280}, V={x:410,y:140};
+      polyPts=[A,B,V];
+      base={x1:A.x,y1:A.y,x2:B.x,y2:B.y};
+      apex=V;
+      solutionLine={x1:V.x,y1:V.y,x2:V.x,y2:A.y};
+    }
+
+    state.q={W,H,type,base,topEdge,apex,polyPts,solutionLine};
+
+    $("#qTitle").textContent = "第一關：從最高點往下畫高";
+    $("#qSubtitle").textContent = "請從圖形最高點開始往下拉直線（起點錯就不算）。";
+
+    const pts = polyPts.map(p=>`${p.x},${p.y}`).join(" ");
+    $("#svgHost").innerHTML = svgWrap(`
+      ${drawGrid()}
+      <polygon points="${pts}" fill="rgba(99,102,241,0.12)" stroke="rgba(15,23,42,0.25)" stroke-width="2"/>
+      <line x1="${base.x1}" y1="${base.y1}" x2="${base.x2}" y2="${base.y2}" stroke="var(--accent-rose)" stroke-width="6" stroke-linecap="round"/>
+    `);
+  }
+
+  function buildLv2(){
+    state.mode="DRAG";
+    $("#tagGoal").textContent="反推高度";
+    $("#workPad").textContent = "提示：面積 = 底 × 高。拖曳端點讓高度變成正確值。";
+
+    const b = randInt(10, 30);
+    const h = randInt(5, 15);
+    const area = b*h;
+
+    state.dragTargetInt = h;
+
+    const W=700, H=360, baseY=280;
+    state.q={W,H,type:"para",b,h,area,baseY,skew:60,handleX:350,maxHInt:20};
+
+    const startH = clamp(h + pick([-3,-2,-1,1,2,3]), 2, 20);
+    setLv2HeightInt(startH);
+
+    $("#lv2Area").textContent = area;
+    $("#lv2Base").textContent = b;
+
+    $("#qTitle").textContent = "第二關：調整高度符合面積";
+    $("#qSubtitle").textContent = "拖曳藍色端點，把高度調整到正確值。";
+
+    renderLv2();
+  }
+
+  function setLv2HeightInt(h){
+    state.dragCurInt = h;
+    state.q.topY = state.q.baseY - (h * 10);
+    state.q.handle = {x:state.q.handleX, y:state.q.topY};
+  }
+
+  function renderLv2(){
+    const q=state.q;
+    const A={x:200,y:q.baseY}, B={x:500,y:q.baseY}, D={x:A.x+q.skew,y:q.topY}, C={x:B.x+q.skew,y:q.topY};
+
+    $("#svgHost").innerHTML = svgWrap(`
+      ${drawGrid()}
+      <polygon points="${A.x},${A.y} ${B.x},${B.y} ${C.x},${C.y} ${D.x},${D.y}" fill="rgba(6,182,212,0.10)" stroke="rgba(15,23,42,0.25)" stroke-width="2"/>
+      <circle cx="${q.handle.x}" cy="${q.handle.y}" r="8" fill="var(--accent-cyan)"/>
+    `);
+
+    $("#lv2CurH").textContent = state.dragCurInt;
+  }
+
+  /* ========================= ✅ 只改這裡：第三關改成「顯示圖形」 ========================= */
+  function buildLv3(){
+    state.mode="NUM";
+    $("#tagGoal").textContent="計算面積";
+
+    const type = pick(["para","tri","trap"]);
+    const {min,max} = state.cfg;
+
+    let b = randInt(min, max);
+    let h = randInt(min, max);
+    let a = randInt(min, max);
+    let ans=0;
+
+    const W=700, H=360;
+    const baseY = 280;
+
+    // 把數值映射到畫面尺寸（穩定不爆版）
+    const baseLen = clamp(b * 8, 160, 360);
+    const heightPx = clamp(h * 10, 80, 170);
+
+    const baseX1 = 170;
+    const baseX2 = baseX1 + baseLen;
+
+    if(type==="para"){
+      ans=b*h;
+      $("#qTitle").textContent = "第三關：平行四邊形面積";
+      $("#qSubtitle").textContent = `底 = ${b}，高 = ${h}`;
+      $("#workPad").textContent = "平行四邊形：面積 = 底 × 高。";
+
+      const skew = 70;
+      const A={x:baseX1,y:baseY}, B={x:baseX2,y:baseY};
+      const D={x:baseX1+skew,y:baseY-heightPx}, C={x:baseX2+skew,y:baseY-heightPx};
+
+      // 高的示意線（虛線）畫在內部
+      const hx = (A.x + B.x)/2;
+      const hyTop = baseY - heightPx;
+
+      $("#svgHost").innerHTML = svgWrap(`
+        ${drawGrid(W,H)}
+        <polygon points="${A.x},${A.y} ${B.x},${B.y} ${C.x},${C.y} ${D.x},${D.y}"
+          fill="rgba(99,102,241,0.12)" stroke="rgba(15,23,42,0.25)" stroke-width="2"/>
+        <line x1="${A.x}" y1="${A.y}" x2="${B.x}" y2="${B.y}" stroke="var(--accent-rose)" stroke-width="6" stroke-linecap="round"/>
+        <line x1="${hx}" y1="${baseY}" x2="${hx}" y2="${hyTop}" stroke="rgba(15,23,42,0.35)" stroke-width="2" stroke-dasharray="6 6"/>
+        <text x="${(A.x+B.x)/2}" y="${baseY+34}" text-anchor="middle" fill="rgba(15,23,42,0.85)" font-family="Space Grotesk" font-size="18">底 ${b}</text>
+        <text x="${hx+10}" y="${(baseY+hyTop)/2}" fill="rgba(15,23,42,0.85)" font-family="Space Grotesk" font-size="18">高 ${h}</text>
+      `, W, H);
+
+    } else if(type==="tri"){
+      ans=(b*h)/2;
+      $("#qTitle").textContent = "第三關：三角形面積";
+      $("#qSubtitle").textContent = `底 = ${b}，高 = ${h}`;
+      $("#workPad").textContent = "三角形：面積 = (底 × 高) ÷ 2。";
+
+      const A={x:baseX1,y:baseY}, B={x:baseX2,y:baseY};
+      const V={x: (A.x+B.x)/2 + pick([-40,-20,0,20,40]), y: baseY - heightPx};
+
+      const hx = V.x; // 高落點的 x（用同 x 做示意）
+      const hyTop = V.y;
+
+      $("#svgHost").innerHTML = svgWrap(`
+        ${drawGrid(W,H)}
+        <polygon points="${A.x},${A.y} ${B.x},${B.y} ${V.x},${V.y}"
+          fill="rgba(99,102,241,0.12)" stroke="rgba(15,23,42,0.25)" stroke-width="2"/>
+        <line x1="${A.x}" y1="${A.y}" x2="${B.x}" y2="${B.y}" stroke="var(--accent-rose)" stroke-width="6" stroke-linecap="round"/>
+        <line x1="${hx}" y1="${baseY}" x2="${hx}" y2="${hyTop}" stroke="rgba(15,23,42,0.35)" stroke-width="2" stroke-dasharray="6 6"/>
+        <text x="${(A.x+B.x)/2}" y="${baseY+34}" text-anchor="middle" fill="rgba(15,23,42,0.85)" font-family="Space Grotesk" font-size="18">底 ${b}</text>
+        <text x="${hx+10}" y="${(baseY+hyTop)/2}" fill="rgba(15,23,42,0.85)" font-family="Space Grotesk" font-size="18">高 ${h}</text>
+      `, W, H);
+
+    } else {
+      // 梯形
+      if(a>=b) b=a+5;
+      ans=((a+b)*h)/2;
+
+      $("#qTitle").textContent = "第三關：梯形面積";
+      $("#qSubtitle").textContent = `上底 = ${a}，下底 = ${b}，高 = ${h}`;
+      $("#workPad").textContent = "梯形：面積 = (上底 + 下底) × 高 ÷ 2。";
+
+      const bottomLen = clamp(b * 8, 210, 420);
+      const topLen = clamp(a * 8, 120, Math.min(320, bottomLen-40));
+      const topY = baseY - heightPx;
+
+      const bottomX1 = 150;
+      const bottomX2 = bottomX1 + bottomLen;
+      const topX1 = bottomX1 + (bottomLen - topLen)/2 + pick([-20,0,20]);
+      const topX2 = topX1 + topLen;
+
+      const A={x:bottomX1,y:baseY}, B={x:bottomX2,y:baseY};
+      const D={x:topX1,y:topY}, C={x:topX2,y:topY};
+
+      const hx = (A.x+B.x)/2;
+      $("#svgHost").innerHTML = svgWrap(`
+        ${drawGrid(W,H)}
+        <polygon points="${A.x},${A.y} ${B.x},${B.y} ${C.x},${C.y} ${D.x},${D.y}"
+          fill="rgba(99,102,241,0.12)" stroke="rgba(15,23,42,0.25)" stroke-width="2"/>
+        <line x1="${A.x}" y1="${A.y}" x2="${B.x}" y2="${B.y}" stroke="var(--accent-rose)" stroke-width="6" stroke-linecap="round"/>
+        <line x1="${D.x}" y1="${D.y}" x2="${C.x}" y2="${C.y}" stroke="rgba(6,182,212,0.55)" stroke-width="5" stroke-linecap="round"/>
+        <line x1="${hx}" y1="${baseY}" x2="${hx}" y2="${topY}" stroke="rgba(15,23,42,0.35)" stroke-width="2" stroke-dasharray="6 6"/>
+        <text x="${(A.x+B.x)/2}" y="${baseY+34}" text-anchor="middle" fill="rgba(15,23,42,0.85)" font-family="Space Grotesk" font-size="18">下底 ${b}</text>
+        <text x="${(D.x+C.x)/2}" y="${topY-10}" text-anchor="middle" fill="rgba(15,23,42,0.85)" font-family="Space Grotesk" font-size="18">上底 ${a}</text>
+        <text x="${hx+10}" y="${(baseY+topY)/2}" fill="rgba(15,23,42,0.85)" font-family="Space Grotesk" font-size="18">高 ${h}</text>
+      `, W, H);
+    }
+
+    state.answer = ans;
+    state.q = {type, W, H};
+  }
+  /* ========================= ✅ 只改到這裡結束 ========================= */
+
+  function getCorrectAnswerText(){
+    if(state.level===1) return "正確答案：起點要在圖形最高點，往下畫出垂直於底邊的高（已顯示示範虛線）。";
+    if(state.level===2) return `正確答案：高度 = ${state.dragTargetInt}`;
+    return `正確答案：面積 = ${pretty(state.answer)}`;
+  }
+
+  function evalLv1(){
+    const L = state.stroke;
+    if(L.length < 2) return { ok:false, reason:"請先畫線。" };
+
+    const pStart = L[0];
+    const pEnd   = L[L.length-1];
+    const q = state.q;
+    const tol = state.cfg.edgeTol;
+
+    const ang = Math.abs(angleDeg(pStart.x,pStart.y,pEnd.x,pEnd.y));
+    const angN = Math.min(Math.abs(ang), Math.abs(180-ang));
+    const diff90 = Math.abs(90-angN);
+    const angleOk = diff90 < state.cfg.angleTol;
+
+    const downwardOk = (pEnd.y - pStart.y) > 10;
+
+    let startOk = false;
+    if(q.apex){
+      startOk = Math.hypot(pStart.x - q.apex.x, pStart.y - q.apex.y) <= tol;
+    } else if(q.topEdge){
+      const d = distPointToSegment(pStart.x,pStart.y, q.topEdge.x1,q.topEdge.y1, q.topEdge.x2,q.topEdge.y2);
+      startOk = d <= tol;
+    }
+
+    const endDist = distPointToSegment(pEnd.x,pEnd.y, q.base.x1,q.base.y1, q.base.x2,q.base.y2);
+    const endOk = endDist <= tol;
+
+    return { ok: angleOk && downwardOk && startOk && endOk, angleOk, downwardOk, startOk, endOk };
+  }
+
+  function submitAnswer(){
+    if(!state.running || state.paused) return;
+
+    if(state.level===1){
+      const r = evalLv1();
+      if(r.ok){
+        onCorrect("✅ 正確！從最高點往下的高，漂亮。");
+      } else {
+        let msg = "❌ 不符合規則。";
+        if(!r.startOk) msg = "❌ 起點要從圖形最高點開始。";
+        else if(!r.downwardOk) msg = "❌ 需要往下畫（由上往下）。";
+        else if(!r.endOk) msg = "❌ 終點要落在粉色底邊上。";
+        else if(!r.angleOk) msg = "❌ 這條線要垂直於底邊。";
+        onWrong(msg);
+      }
+    } else if(state.level===2){
+      (state.dragCurInt===state.dragTargetInt)
+        ? onCorrect("✅ 正確！高度同步成功。")
+        : onWrong("❌ 高度不符合面積。");
+    } else {
+      const v = parseFloat($("#ansInput").value);
+      (Math.abs(v-state.answer)<0.1)
+        ? onCorrect("✅ 正確！")
+        : onWrong("❌ 算錯了。");
+    }
+  }
+
+  function onCorrect(msg){
+    state.correct++;
+    state.combo++;
+    state.score += Math.round(50 * multFor(state.combo));
+    state.time += 5;
+
+    setFeedback(msg, "good");
+    renderHUD();
+
+    setTimeout(buildQuestion, state.cfg.nextDelay);
+  }
+
+  function onWrong(msg){
+    state.wrong++;
+    state.combo=0;
+    state.time -= 5;
+
+    if(state.level===1){
+      state.showAns = true;
+      redrawOverlay();
+    }
+
+    setFeedback(`${msg} ${getCorrectAnswerText()}`, "bad");
+    renderHUD();
+
+    setTimeout(buildQuestion, state.cfg.nextDelay);
+  }
+
+  function startTimer(){
+    state.timer = setInterval(()=>{
+      if(!state.running || state.paused) return;
+      state.time--;
+      renderHUD();
+      if(state.time<=0){
+        clearInterval(state.timer);
+        finishRun();
+      }
+    }, 1000);
+  }
+
+  function finishRun(){
+    state.running=false;
+    saveToLB();
+    const total = state.correct + state.wrong;
+    $("#endText").innerHTML = `分數：${state.score}<br>答對：${state.correct} / ${total || 0}`;
+    $("#endMask").classList.add("show");
+  }
+
+  let drawing=false, dragging=false;
+
+  canvas.addEventListener("pointerdown", e=>{
+    if(!state.running || state.paused) return;
+    const p = pxToView(pointerPosPx(e));
+
+    if(state.mode==="DRAW"){
+      drawing=true;
+      state.stroke=[p, p];
+      canvas.setPointerCapture?.(e.pointerId);
+      redrawOverlay();
+      liveAngleHint();
+    } else if(state.mode==="DRAG" && Math.hypot(p.x-state.q.handle.x, p.y-state.q.handle.y)<20){
+      dragging=true;
+      canvas.setPointerCapture?.(e.pointerId);
+    }
+  });
+
+  canvas.addEventListener("pointermove", e=>{
+    if(!state.running || state.paused) return;
+    const p = pxToView(pointerPosPx(e));
+
+    if(drawing){
+      state.stroke[1]=p;
+      redrawOverlay();
+      liveAngleHint();
+    } else if(dragging){
+      const h = clamp(Math.round((state.q.baseY - p.y)/10), 1, 20);
+      setLv2HeightInt(h);
+      renderLv2();
+    }
+  });
+
+  function endPointer(e){
+    drawing=false;
+    dragging=false;
+    try{ canvas.releasePointerCapture?.(e.pointerId); }catch(_){}
+  }
+  canvas.addEventListener("pointerup", endPointer);
+  canvas.addEventListener("pointercancel", endPointer);
+  canvas.addEventListener("pointerleave", (e)=>{ if(drawing) endPointer(e); });
+
+  function validateName(){
+    const raw = ($("#nameInput").value || "").trim();
+    const ok = raw.length > 0;
+    $("#btnIntroGo").disabled = !ok;
+    $("#nameErr").style.display = ok ? "none" : "block";
+    return ok;
+  }
+
+  $("#nameInput").addEventListener("input", ()=>{
+    const raw = ($("#nameInput").value || "").trim();
+    $("#nameErr").style.display = raw.length ? "none" : "block";
+    $("#btnIntroGo").disabled = !raw.length;
+  });
+
+  $("#btnIntroGo").onclick = () => {
+    if(!validateName()) return;
+    const raw = ($("#nameInput").value || "").trim();
+    state.name = raw;
+    localStorage.setItem("JM_PLAYER_NAME", state.name);
+    goPage("page-menu");
+  };
+
+  $("#btnIntroClear").onclick = () => {
+    $("#nameInput").value="";
+    $("#btnIntroGo").disabled = true;
+    $("#nameErr").style.display = "block";
+    $("#nameInput").focus();
+  };
+
+  $("#btnBackIntro").onclick = () => goPage("page-intro");
+
+  $("#levelCards").onclick = e => {
+    const c = e.target.closest(".card");
+    if(!c) return;
+
+    document.querySelectorAll(".card").forEach(x=>x.classList.remove("active"));
+    c.classList.add("active");
+    selectedLv = parseInt(c.dataset.lv);
+
+    $("#btnPlay").disabled = false;
+    renderMenuLB();
+  };
+
+  document.querySelectorAll("input[name='diff']").forEach(r=>{
+    r.addEventListener("change", renderMenuLB);
+  });
+
+  $("#btnPlay").onclick = () => {
+    state.level = selectedLv;
+    state.diff = document.querySelector("input[name='diff']:checked")?.value || "E";
+    state.cfg = diffCfg(state.diff);
+
+    state.running=true;
+    state.paused=false;
+    state.time=60;
+    state.score=0;
+    state.combo=0;
+    state.correct=0;
+    state.wrong=0;
+
+    $("#pauseMask").classList.remove("show");
+    $("#endMask").classList.remove("show");
+
+    goPage("page-game");
+    buildQuestion();
+    startTimer();
+  };
+
+  $("#btnSubmit").onclick = submitAnswer;
+
+  $("#btnShowAns").onclick = () => {
+    if(state.level!==1) return;
+    state.showAns = !state.showAns;
+    redrawOverlay();
+    setFeedback(state.showAns ? "已顯示示範虛線（從最高點往下）。" : "已隱藏示範。", "good");
+  };
+
+  $("#btnClearDraw").onclick = () => {
+    clearStroke();
+    removeLiveHint();
+    setFeedback("已重設畫線。", "good");
+  };
+
+  $("#btnPause").onclick = () => {
+    if(!state.running) return;
+    state.paused = true;
+    $("#pauseMask").classList.add("show");
+  };
+
+  $("#btnResume").onclick = () => {
+    state.paused = false;
+    $("#pauseMask").classList.remove("show");
+  };
+
+  $("#btnRestart").onclick = () => {
+    if(!state.running) return;
+    if(!confirm("要重來本模組嗎？")) return;
+
+    clearInterval(state.timer);
+    $("#endMask").classList.remove("show");
+
+    state.running=true;
+    state.paused=false;
+    state.time=60;
+    state.score=0;
+    state.combo=0;
+    state.correct=0;
+    state.wrong=0;
+
+    buildQuestion();
+    startTimer();
+  };
+
+  $("#btnBackMenu").onclick = () => {
+    if(!confirm("要回主選關嗎？本次進度不會結算排行。")) return;
+    clearInterval(state.timer);
+    state.running=false;
+    state.paused=false;
+    $("#pauseMask").classList.remove("show");
+    goPage("page-menu");
+    renderMenuLB();
+  };
+
+  $("#btnEndAgain").onclick = () => {
+    $("#endMask").classList.remove("show");
+    clearInterval(state.timer);
+
+    state.running=true;
+    state.paused=false;
+    state.time=60;
+    state.score=0;
+    state.combo=0;
+    state.correct=0;
+    state.wrong=0;
+
+    buildQuestion();
+    startTimer();
+  };
+
+  $("#btnEndToMenu").onclick = () => {
+    $("#endMask").classList.remove("show");
+    goPage("page-menu");
+    renderMenuLB();
+  };
+
+  function saveToLB(){
+    const list = readLB(state.level, state.diff);
+    list.push({name: state.name, score: state.score});
+    list.sort((a,b)=>b.score-a.score);
+    writeLB(state.level, state.diff, list);
+  }
+
+  const n = localStorage.getItem("JM_PLAYER_NAME");
+  if(n){
+    $("#nameInput").value = n;
+    $("#btnIntroGo").disabled = !n.trim().length;
+    $("#nameErr").style.display = n.trim().length ? "none" : "block";
+  } else {
+    $("#nameErr").style.display = "block";
+  }
+
+  renderMenuLB();
+})();
+</script>
+</body>
+</html>
+
