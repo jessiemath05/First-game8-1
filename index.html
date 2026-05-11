@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+
+    <!-- ✅ 快取連結預覽 -->
+    <meta name="description" content="© 2025–2026 Jessie Math 捷析老師. All rights reserved.">
+    <!-- ✅ LINE / FB 預覽用 -->
+    <meta property="og:title" content="Jessie Math 捷析 - 面積大挑戰">
+    <meta property="og:description" content="© 2025–2026 Jessie Math 捷析老師. All rights reserved.">
+    <meta property="og:type" content="website">
+
+    <!-- ✅ 預覽圖片 -->
+    <meta property="og:image" content="g5-u8-1.png">
+    <meta property="og:image:width" content="1024">
+    <meta property="og:image:height" content="1536">
+    <meta property="og:image:alt" content="Jessie Math 遊戲封面">
+
+    <!-- ✅ 有些平台會參考 -->
+    <link rel="image_src" href="g5-u8.png">
+
+    <!-- ✅ Twitter / X -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Jessie Math 捷析 - 面積大挑戰">
+    <meta name="twitter:description" content="© 2025–2026 Jessie Math 捷析老師. All rights reserved.">
+    <meta name="twitter:image" content="g5-u8-1.png">
+
+    <!-- ✅ RWD -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Jessie Math捷析 - 面積大挑戰</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        /* == CSS 樣式區域 == */
+        :root {
+            --primary-color: #FFC300;
+            --secondary-color: #333;
+            --text-color: #000;
+            --background-color: #f4f4f4;
+            --success-color: #28a745;
+            --error-color: #dc3545;
+            --info-color: #17a2b8;
+        }
+
+        body {
+            font-family: 'Microsoft JhengHei', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            /* 加入背景圖並設定左上角對齊延伸 */
+            background-image: url('jessie logo.jpg');
+            background-size: cover;
+            background-position: top left;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            
+            color: var(--text-color);
+            line-height: 1.6;
+            box-sizing: border-box;
+            overflow-x: hidden; /* 防止吉祥物跳出造成卷軸 */
+        }
+
+        /* 強制手機轉向提示層 */
+        #rotate-prompt {
+            display: none;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95); color: var(--primary-color); z-index: 99999;
+            text-align: center; flex-direction: column; justify-content: center; align-items: center;
+        }
+        #rotate-prompt i { font-size: 4em; margin-bottom: 20px; animation: rotatePhone 2s infinite ease-in-out; }
+        #rotate-prompt h2 { margin: 10px 0; font-size: 1.8em; color: white; }
+        #rotate-prompt p { font-size: 1.2em; color: #ccc; }
+        
+        @keyframes rotatePhone {
+            0% { transform: rotate(0deg); }
+            50% { transform: rotate(-90deg); }
+            100% { transform: rotate(-90deg); }
+        }
+
+        /* 針對手機直向時隱藏遊戲，顯示旋轉提示 */
+        @media screen and (max-width: 768px) and (orientation: portrait) {
+            #rotate-prompt { display: flex; }
+            .navbar, #game-container, footer { display: none !important; }
+        }
+
+        .navbar {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 10px 5%; background-color: rgba(255, 255, 255, 0.95); box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .logo-area { display: flex; align-items: center; }
+        .profile-img { width: 40px; height: 40px; border-radius: 50%; margin-right: 10px; }
+        .navbar h1 { font-size: 1.5em; color: var(--secondary-color); margin: 0; }
+        .nav-links { display: flex; gap: 10px; margin-left: auto; }
+        .nav-button {
+            text-decoration: none; padding: 8px 15px; border-radius: 20px;
+            background-color: #eee; color: var(--secondary-color); white-space: nowrap;
+            font-size: 0.9em; display: inline-flex; align-items: center; transition: all 0.3s;
+        }
+        .nav-button i { margin-right: 5px; }
+        .primary-button { background-color: var(--primary-color); border: 2px solid var(--primary-color); font-weight: bold; }
+
+        #game-container { max-width: 900px; margin: 20px auto; padding: 0 20px; position: relative; }
+
+        #start-modal { margin: 50px auto; width: 100%; }
+        .modal-content {
+            background-color: rgba(255, 255, 255, 0.95); padding: 40px; border-radius: 15px;
+            max-width: 500px; width: 100%; margin: auto; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            box-sizing: border-box; text-align: center;
+        }
+        #player-name-input {
+            padding: 12px; width: 100%; box-sizing: border-box; border: 2px solid #ddd;
+            border-radius: 8px; font-size: 1.3em; margin: 10px 0 20px 0;
+        }
+        .action-button {
+            padding: 12px 25px; margin-top: 25px; background-color: var(--primary-color);
+            border: none; border-radius: 8px; cursor: pointer; font-size: 1.1em;
+            font-weight: bold; width: 100%;
+        }
+        .game-rules { margin-top: 20px; }
+
+        .hidden { display: none !important; }
+
+        .status-bar {
+            display: flex; justify-content: space-around; padding: 10px;
+            background-color: rgba(51, 51, 51, 0.9); color: white; border-radius: 5px; margin-bottom: 20px;
+            font-size: 1.2em; font-weight: bold;
+        }
+
+        /* 遊戲面板 - 加入相對定位作為白板容器 */
+        .game-question-panel {
+            position: relative; border: 1px solid #ccc; padding: 20px; min-height: 400px;
+            border-radius: 5px; background-color: rgba(255, 255, 255, 0.95); text-align: center;
+            display: flex; flex-direction: column; align-items: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        /* 白板相關設定 */
+        #whiteboard-layer {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 5; pointer-events: none; /* 預設不攔截點擊 */
+            border-radius: 5px;
+        }
+        #whiteboard-layer.active {
+            pointer-events: auto; /* 開啟時可畫圖 */
+            background-color: rgba(255, 255, 255, 0.3); 
+        }
+        #whiteboard { width: 100%; height: 100%; touch-action: none; cursor: crosshair; }
+        
+        /* 確保輸入與按鈕維持在最上層，不會被白板蓋住點不到 */
+        .answer-area, .control-buttons, #feedback-message { position: relative; z-index: 10; }
+
+        #context-image {
+            width: 100%; max-width: 450px; height: 220px; background-color: #ffffff;
+            margin-bottom: 15px; display: flex; justify-content: center; align-items: center; overflow: hidden;
+            border-radius: 8px; border: 1px solid #eee;
+        }
+
+        .shape { fill: #ADD8E6; stroke: #000; stroke-width: 2; }
+        .shape2{ fill:#FFE4B5; stroke:#000; stroke-width:2; }
+        .cutout{ fill:#fff; stroke:#000; stroke-width:2; stroke-dasharray: 4; }
+        .height-line { stroke: #ff0000; stroke-width: 1.5; stroke-dasharray: 4; }
+        .label { font-family: Arial, sans-serif; font-size: 14px; fill: var(--secondary-color); font-weight: bold; }
+
+        .question-text { font-size: 1.5em; margin-bottom: 25px; font-weight: bold; position: relative; z-index: 2; background: rgba(255,255,255,0.8); padding: 5px 10px; border-radius: 8px;}
+        .answer-area { display: flex; align-items: center; justify-content: center; width: 100%; max-width: 450px; margin-bottom: 20px; }
+        .answer-area input {
+            padding: 15px; font-size: 1.5em; border: 2px solid #ddd;
+            border-radius: 5px; width: 180px; text-align: center; margin-right: 20px;
+        }
+        .submit-btn { padding: 15px 30px; font-size: 1.2em; margin-top: 0; width: auto; }
+
+        .control-buttons { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: auto; padding-top: 20px; width: 100%; }
+        .control-btn {
+            padding: 12px 15px; border: none; border-radius: 5px; cursor: pointer;
+            background-color: #e0e0e0; font-size: 1em; flex-grow: 1; min-width: 90px; font-weight: bold;
+        }
+        .wb-active-btn { background-color: #17a2b8 !important; color: white; }
+
+        .feedback.correct { color: var(--success-color); font-weight: bold; font-size: 1.2em; }
+        .feedback.incorrect { color: var(--error-color); font-weight: bold; font-size: 1.2em; }
+
+        .difficulty-options { display: flex; align-items: center; margin-bottom: 30px; gap: 10px; justify-content: center; background: rgba(255,255,255,0.8); padding: 10px; border-radius: 10px;}
+        .difficulty-options span { font-size: 1.1em; font-weight: bold; color: #555; white-space: nowrap; }
+        .difficulty-btn {
+            padding: 10px 20px; border: 2px solid #ddd; background-color: #fff;
+            cursor: pointer; border-radius: 8px; font-size: 1.05em; transition: all 0.3s;
+            flex-grow: 1; max-width: 120px; font-weight: bold;
+        }
+        .difficulty-btn.active {
+            background-color: var(--primary-color); border-color: var(--primary-color);
+            box-shadow: 0 2px 5px rgba(255, 195, 0, 0.4); color: var(--secondary-color);
+        }
+
+        .level-grid { display: grid; grid-template-columns: 1fr; gap: 25px; margin-top: 20px; }
+        @media (min-width: 600px) { .level-grid { grid-template-columns: 1fr 1fr; } }
+        .level-card {
+            padding: 30px 20px; border-radius: 10px; border: 2px solid #ddd;
+            text-align: center; min-height: 150px; display: flex; flex-direction: column; justify-content: center;
+            background-color: rgba(255, 255, 255, 0.95); cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .level-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); }
+        .level-card h3 { font-size: 1.8em; margin: 0 0 8px 0; }
+        .level-card p { font-size: 1.3em; margin: 0 0 10px 0; font-weight: 500; }
+        .stars { color: gold; font-size: 1.5em; margin-top: 5px; text-shadow: 1px 1px 1px rgba(0,0,0,0.2); }
+
+        /* 排行榜列表樣式 */
+        #leaderboard-view h2 { text-align: center; background: rgba(255,255,255,0.9); padding: 10px; border-radius: 8px; display: inline-block; }
+        #leaderboard-list { list-style: none; padding: 0; }
+        #leaderboard-list li {
+            background: rgba(255, 255, 255, 0.95); margin-bottom: 10px; padding: 15px; border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); border: 1px solid #eee;
+            display: flex; flex-direction: column; gap: 5px;
+        }
+        .lb-row-top { display: flex; justify-content: space-between; font-weight: bold; font-size: 1.1em; }
+        .lb-row-mid { color: #666; font-size: 0.9em; display: flex; justify-content: space-between; }
+        .lb-row-bot { display: flex; justify-content: space-between; align-items: center; }
+
+        /* 復盤數據統計區 */
+        .stats-box { background: #f8f9fa; padding: 15px; border-radius: 10px; margin: 15px 0; border: 1px dashed #ccc; font-size: 1.1em; }
+        .stats-box p { margin: 8px 0; }
+
+        /* 吉祥物彈窗設定 */
+        .mascot-popup {
+            position: fixed; bottom: 20px; z-index: 1000; pointer-events: none;
+            display: flex; flex-direction: column; align-items: center; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .mascot-left { left: -400px; }
+        .mascot-left.show { left: 20px; }
+        .mascot-right { right: -400px; }
+        .mascot-right.show { right: 20px; }
+        
+        .mascot-bubble {
+            background: white; border: 3px solid #FFC300; border-radius: 15px;
+            padding: 12px 20px; margin-bottom: 10px; font-weight: bold; color: #333;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2); text-align: center; max-width: 250px;
+            font-size: 1.2em; position: relative;
+        }
+        .mascot-bubble::after { /* 泡泡尖角 */
+            content: ''; position: absolute; bottom: -12px; left: 50%; transform: translateX(-50%);
+            border-width: 12px 10px 0; border-style: solid; border-color: #FFC300 transparent transparent transparent;
+        }
+        .mascot-bubble-inner::after { /* 內部白底尖角蓋住邊框線 */
+            content: ''; position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%);
+            border-width: 9px 8px 0; border-style: solid; border-color: white transparent transparent transparent; z-index: 1;
+        }
+
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; align-items: center; padding: 10px 3%; gap: 10px; }
+            .logo-area { width: 100%; justify-content: center; margin-bottom: 5px; }
+            .nav-links { width: 100%; flex-direction: row; flex-wrap: wrap; justify-content: space-around; margin-left: 0; }
+            .nav-button { padding: 6px 10px; font-size: 0.85em; flex-grow: 1; margin: 2px; }
+            #game-container { padding: 0 10px; }
+            .difficulty-btn { flex-grow: 1; max-width: none; }
+            .difficulty-options { justify-content: space-between; gap: 5px; }
+            .status-bar { font-size: 1em; justify-content: space-between; }
+            .game-question-panel { min-height: 350px; padding: 15px; }
+            .answer-area input { flex-grow: 1; width: auto; padding: 12px; font-size: 1.3em; margin-right: 10px; }
+            .control-buttons { gap: 5px; padding-top: 15px; }
+            .control-btn { padding: 10px; font-size: 0.85em; min-width: auto; }
+            .footer-pill{ flex-direction: column; align-items: flex-start; gap: 8px; }
+            .footer-right{ width: 100%; }
+            /* 手機板調整吉祥物彈出位置 */
+            .mascot-popup { bottom: 60px; }
+            .mascot-left.show { left: 0px; }
+            .mascot-right.show { right: 0px; }
+        }
+
+        footer{ max-width: 900px; margin: 18px auto 28px auto; padding: 0 20px; box-sizing: border-box; }
+        .footer-pill{
+            background: rgba(255,255,255,.95); border: 1px solid rgba(0,0,0,.08); box-shadow: 0 10px 30px rgba(0,0,0,.08);
+            border-radius: 999px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; gap: 14px;
+        }
+        .footer-left{ display: flex; align-items: center; gap: 10px; min-width: 0; }
+        .footer-dot{
+            width: 10px; height: 10px; border-radius: 50%; background: var(--primary-color); box-shadow: 0 0 0 4px rgba(255,195,0,.25); flex: 0 0 auto;
+        }
+        .footer-copy{ font-size: 0.95em; color: #374151; font-weight: 700; white-space: nowrap; }
+        .footer-right{ display: flex; align-items: center; gap: 10px; min-width: 0; }
+        .footer-icon{
+            width: 34px; height: 34px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center;
+            background: rgba(255,195,0,.18); border: 1px solid rgba(255,195,0,.35); color: #111827; flex: 0 0 auto;
+        }
+        .footer-tagline{ font-size: 0.98em; color: #111827; font-weight: 800; white-space: nowrap; }
+        @media (max-width: 420px){ .footer-copy, .footer-tagline{ white-space: normal; line-height: 1.25; } .footer-pill{ border-radius: 18px; } }
+    </style>
+</head>
+<body>
+
+    <!-- ✅ 手機轉向提示 -->
+    <div id="rotate-prompt">
+        <i class="fas fa-mobile-alt"></i>
+        <h2>請將手機旋轉至橫向</h2>
+        <p>為獲得最佳遊戲體驗，手機版僅支援橫向模式進行遊戲。</p>
+    </div>
+
+    <header class="navbar">
+        <div class="logo-area">
+            <img src="JESSIEMATH-Q.png" alt="Jessie Math Logo" class="profile-img">
+            <h1>Jessie Math 捷析 </h1>
+        </div>
+        <nav class="nav-links">
+            <a href="https://jessiemath0703-chu.github.io/website2/" class="nav-button"><i class="fas fa-home"></i> 首頁</a>
+            <a href="https://jessiemath0703-chu.github.io/Game-Lobby/" class="nav-button"><i class="fas fa-gamepad"></i> 遊戲大廳</a>
+            <a href="https://jessiemath0703-chu.github.io/Game-Lobby/#g5-u8" class="nav-button primary-button"><i class="fas fa-arrow-left"></i> G5 面積</a>
+        </nav>
+    </header>
+
+    <main id="game-container">
+
+        <!-- 吉祥物彈窗 (預先隱藏在畫面兩側) -->
+        <div id="mascot-left" class="mascot-popup mascot-left">
+            <div class="mascot-bubble"><span id="mascot-left-bubble" class="mascot-bubble-inner">加油！</span></div>
+            <img id="mascot-left-img" src="jessie.png" alt="捷析老師" style="width: 250px;">
+        </div>
+        <div id="mascot-right" class="mascot-popup mascot-right">
+            <div class="mascot-bubble"><span id="mascot-right-bubble" class="mascot-bubble-inner">太棒了！</span></div>
+            <img id="mascot-right-img" src="JESSIEMATH-Q.png" alt="捷析老師 Q版" style="width: 250px;">
+        </div>
+
+        <section id="start-modal" class="modal">
+            <div class="modal-content">
+                <h2>歡迎來到面積大挑戰！</h2>
+                <p style="margin-top: 15px; margin-bottom: 5px;">請輸入您的名字開始遊戲:</p>
+                <input type="text" id="player-name-input" placeholder="您的名字" maxlength="10">
+
+                <div class="game-rules">
+                    <h3>📚 遊戲規則說明</h3>
+                    <ul style="text-align: left; display: inline-block;">
+                        <li>計時：每回合 **60 秒**，答對 **+5 秒**，答錯 **-5 秒**。</li>
+                        <li>計分：答對得分，連續答對觸發 **Combo 連擊**。</li>
+                        <li>難度：數字與題型會隨著難度動態變化！</li>
+                        <li>輔助：可在遊戲中使用透明計算白板！</li>
+                    </ul>
+                </div>
+                <button id="start-game-button" class="action-button">確認並選擇關卡</button>
+            </div>
+        </section>
+
+        <section id="level-selection" class="game-view hidden">
+            <h2 style="text-align: center; background: rgba(255,255,255,0.9); padding: 10px; border-radius: 8px;">🏆 選擇關卡與難度</h2>
+
+            <div class="difficulty-options">
+                <span>難度/速度：</span>
+                <button data-speed="easy" class="difficulty-btn active">簡單</button>
+                <button data-speed="medium" class="difficulty-btn">普通</button>
+                <button data-speed="hard" class="difficulty-btn">困難</button>
+            </div>
+
+            <div class="level-grid">
+                <button data-level="1" class="level-card">
+                    <h3>關卡 1</h3>
+                    <p>🔷 平行四邊形面積</p>
+                    <div class="stars" data-stars="0">☆☆☆</div>
+                </button>
+                <button data-level="2" class="level-card">
+                    <h3>關卡 2</h3>
+                    <p>🔺 三角形面積</p>
+                    <div class="stars" data-stars="0">☆☆☆</div>
+                </button>
+                <button data-level="3" class="level-card">
+                    <h3>關卡 3</h3>
+                    <p>🔲 梯形面積</p>
+                    <div class="stars" data-stars="0">☆☆☆</div>
+                </button>
+                <button data-level="4" class="level-card mixed-level">
+                    <h3>關卡 4</h3>
+                    <p>🌀 複合式面積 (混合)</p>
+                    <div class="stars" data-stars="0">☆☆☆</div>
+                </button>
+            </div>
+
+            <div style="text-align: center; margin-top: 20px;">
+                <button id="show-leaderboard-btn" class="action-button" style="background-color: #17a2b8; max-width: 300px;"><i class="fas fa-list-ol"></i> 查看前10名排行榜</button>
+            </div>
+        </section>
+
+        <section id="game-play-area" class="game-view hidden">
+            <div class="status-bar">
+                <div id="timer-display" class="timer">⏳ 60s</div>
+                <div id="score-display" class="score score-display">得分: 0</div>
+                <div id="combo-display" class="combo combo-display">連擊: 0</div>
+            </div>
+
+            <div class="game-question-panel" id="question-panel">
+                <!-- 計算白板圖層 -->
+                <div id="whiteboard-layer">
+                    <canvas id="whiteboard"></canvas>
+                </div>
+
+                <div id="context-image" class="context-image-placeholder">
+                    請選擇關卡開始遊戲。
+                </div>
+
+                <div id="question-text" class="question-text">
+                    準備好了嗎？
+                </div>
+
+                <div id="answer-area" class="answer-area">
+                    <input type="number" id="answer-input" placeholder="填入答案 (整數)">
+                    <button id="submit-answer-btn" class="action-button primary-button submit-btn">送出答案</button>
+                </div>
+                <div id="feedback-message" class="feedback"></div>
+
+                <div class="control-buttons">
+                    <button id="toggle-whiteboard-btn" class="control-btn"><i class="fas fa-pen"></i> 打開白板</button>
+                    <button id="clear-whiteboard-btn" class="control-btn"><i class="fas fa-eraser"></i> 清除白板</button>
+                    <button id="reset-button" class="control-btn"><i class="fas fa-redo"></i> 重新</button>
+                    <button id="pause-button" class="control-btn"><i class="fas fa-pause"></i> 暫停</button>
+                    <button id="exit-button" class="control-btn"><i class="fas fa-sign-out-alt"></i> 離開</button>
+                </div>
+            </div>
+        </section>
+
+        <div id="pause-overlay" class="modal hidden">
+            <div class="modal-content pause-content">
+                <h2>⏸ 遊戲暫停中</h2>
+                <button id="resume-button" class="action-button">繼續遊戲</button>
+            </div>
+        </div>
+
+        <div id="result-modal" class="modal hidden">
+            <div class="modal-content">
+                <h2>🎉 挑戰結束！</h2>
+                
+                <div class="stats-box" id="final-stats">
+                    <!-- 復盤數據將填入此處 -->
+                </div>
+
+                <div id="final-stars" class="stars result-stars" style="text-align: center;"></div>
+                <p id="star-message" style="text-align: center; font-weight: bold;"></p>
+
+                <div id="correct-answer-display" class="correct-answer-info" style="text-align: left; max-height: 250px; overflow-y: auto; padding-right: 10px;">
+                    <h4>本局題目回顧：</h4>
+                </div>
+
+                <button id="back-to-select" class="action-button">返回關卡選擇</button>
+            </div>
+        </div>
+
+        <section id="leaderboard-view" class="game-view hidden">
+            <div style="text-align: center;">
+                <h2>🥇 排行榜 (Top 10)</h2>
+            </div>
+            <ul id="leaderboard-list">
+            </ul>
+            <div style="text-align: center; margin-top: 20px;">
+                <button id="back-from-leaderboard" class="action-button" style="background-color: #6c757d; max-width: 200px;">返回</button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ✅ Footer -->
+    <footer>
+        <div class="footer-pill">
+            <div class="footer-left">
+                <div class="footer-dot" aria-hidden="true"></div>
+                <div class="footer-copy">© 2025–2026 Jessie Math 捷析老師. All rights reserved.</div>
+            </div>
+            <div class="footer-right">
+                <div class="footer-icon" aria-hidden="true"><i class="fas fa-compass"></i></div>
+                <div class="footer-tagline">數學不迷路，捷析Jessie 帶你走向理解。</div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        window.onload = function() {
+            // == 核心變數 ==
+            let playerName = '';
+            let currentLevel = 0;
+            let currentDifficulty = '簡單';
+            let currentScore = 0;
+            let currentCombo = 0;
+            let timeLeft = 60;
+            let timerInterval = null;
+            let isPaused = false;
+            let questionHistory = [];
+            let lastGenerator = null; // 用於避免連續出相同題型
+            
+            // 復盤統計數據
+            let totalQuestions = 0;
+            let correctQuestions = 0;
+
+            // == DOM 元素 ==
+            const startModal = document.getElementById('start-modal');
+            const levelSelection = document.getElementById('level-selection');
+            const gamePlayArea = document.getElementById('game-play-area');
+            const pauseOverlay = document.getElementById('pause-overlay');
+            const resultModal = document.getElementById('result-modal');
+            const leaderboardView = document.getElementById('leaderboard-view');
+            const contextImage = document.getElementById('context-image');
+
+            const playerNameInput = document.getElementById('player-name-input');
+            const timerDisplay = document.getElementById('timer-display');
+            const scoreDisplay = document.getElementById('score-display');
+            const comboDisplay = document.getElementById('combo-display');
+            const questionText = document.getElementById('question-text');
+            const answerInput = document.getElementById('answer-input');
+            const submitButton = document.getElementById('submit-answer-btn');
+
+            const STAR_THRESHOLD = { 1: 50, 2: 150, 3: 300 };
+
+            // == 隨機函式與難度擴展 ==
+            function getRandomInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+            function pick(arr){ return arr[Math.floor(Math.random() * arr.length)]; }
+            function getRandomEven(min, max) { let num = getRandomInt(min, max); return num % 2 === 0 ? num : num + 1; }
+            function getRandomMultiple(min, max, m){ const a = Math.ceil(min / m); const b = Math.floor(max / m); return getRandomInt(a, b) * m; }
+            function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
+
+            // 根據難度動態放大數字範圍，使題庫更豐富變化
+            function scale(min, max) { 
+                let m = currentDifficulty === '簡單' ? 1 : (currentDifficulty === '普通' ? 2 : 4);
+                return getRandomInt(min * m, max * m);
+            }
+            function scaleEven(min, max) {
+                let m = currentDifficulty === '簡單' ? 1 : (currentDifficulty === '普通' ? 2 : 4);
+                return getRandomEven(min * m, max * m);
+            }
+            function scaleMult(min, max, mult) {
+                let m = currentDifficulty === '簡單' ? 1 : (currentDifficulty === '普通' ? 2 : 3);
+                return getRandomMultiple(min * m, max * m, mult);
+            }
+
+            // == 捷析老師隨機加油機制 ==
+            const mascotLeft = document.getElementById('mascot-left');
+            const mascotRight = document.getElementById('mascot-right');
+            const mascotLeftImg = document.getElementById('mascot-left-img');
+            const mascotRightImg = document.getElementById('mascot-right-img');
+            const mascotLeftBubble = document.getElementById('mascot-left-bubble');
+            const mascotRightBubble = document.getElementById('mascot-right-bubble');
+
+            const praiseWords = ["太棒了！", "繼續保持！", "你超強！", "完全正確！", "就是這樣！", "計算得很棒！", "無人能擋！"];
+            const comfortWords = ["沒關係，再試一次！", "加油，你可以的！", "仔細看題目喔！", "別灰心！", "多想一下，答案就快出來了！", "穩住，這題有點挑戰！"];
+
+            function triggerMascot(isCorrect) {
+                const isLeft = Math.random() > 0.5;
+                const randomWidth = Math.floor(Math.random() * 81) + 200; // 200~280px
+                const message = isCorrect ? pick(praiseWords) : pick(comfortWords);
+
+                if (isLeft) {
+                    mascotLeftImg.style.width = randomWidth + 'px';
+                    mascotLeftBubble.textContent = message;
+                    mascotLeft.classList.add('show');
+                    setTimeout(() => mascotLeft.classList.remove('show'), 3000);
+                } else {
+                    mascotRightImg.style.width = randomWidth + 'px';
+                    mascotRightBubble.textContent = message;
+                    mascotRight.classList.add('show');
+                    setTimeout(() => mascotRight.classList.remove('show'), 3000);
+                }
+            }
+
+            // == 計算白板功能 ==
+            const canvas = document.getElementById('whiteboard');
+            const ctx = canvas.getContext('2d');
+            let isDrawing = false;
+            let whiteboardActive = false;
+
+            function initWhiteboard() {
+                const layer = document.getElementById('whiteboard-layer');
+                canvas.width = layer.clientWidth;
+                canvas.height = layer.clientHeight;
+                ctx.strokeStyle = 'blue';
+                ctx.lineWidth = 3;
+                ctx.lineCap = 'round';
+            }
+            window.addEventListener('resize', () => { if(!gamePlayArea.classList.contains('hidden')) initWhiteboard(); });
+
+            function startDrawing(e) {
+                if (!whiteboardActive) return;
+                isDrawing = true;
+                draw(e);
+            }
+            function stopDrawing() { isDrawing = false; ctx.beginPath(); }
+            function draw(e) {
+                if (!isDrawing || !whiteboardActive) return;
+                e.preventDefault(); 
+                const rect = canvas.getBoundingClientRect();
+                let x = e.clientX || (e.touches && e.touches[0].clientX);
+                let y = e.clientY || (e.touches && e.touches[0].clientY);
+                x -= rect.left; y -= rect.top;
+
+                ctx.lineTo(x, y);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+            }
+
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('touchstart', startDrawing, {passive: false});
+            canvas.addEventListener('touchend', stopDrawing);
+            canvas.addEventListener('touchmove', draw, {passive: false});
+
+            document.getElementById('toggle-whiteboard-btn').addEventListener('click', function() {
+                whiteboardActive = !whiteboardActive;
+                const layer = document.getElementById('whiteboard-layer');
+                if (whiteboardActive) {
+                    layer.classList.add('active');
+                    this.innerHTML = '<i class="fas fa-times"></i> 關閉白板';
+                    this.classList.add('wb-active-btn');
+                } else {
+                    layer.classList.remove('active');
+                    this.innerHTML = '<i class="fas fa-pen"></i> 打開白板';
+                    this.classList.remove('wb-active-btn');
+                }
+            });
+
+            document.getElementById('clear-whiteboard-btn').addEventListener('click', () => {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            });
+
+
+            // SVG 基本框
+            function svgWrap(inner, w=350, h=200){
+                return `
+                    <svg width="${w}" height="${h}" class="area-diagram" viewBox="0 0 ${w} ${h}">
+                        <rect width="${w}" height="${h}" fill="white"/>
+                        ${inner}
+                    </svg>
+                `;
+            }
+
+            const allViews = [startModal, levelSelection, gamePlayArea, resultModal, leaderboardView, pauseOverlay];
+            function showView(viewElement) {
+                allViews.forEach(el => { if (el) el.classList.add('hidden'); });
+                if (viewElement) viewElement.classList.remove('hidden');
+                
+                if (viewElement === gamePlayArea) {
+                    setTimeout(initWhiteboard, 50); 
+                }
+            }
+
+            function startTimer() {
+                if (timerInterval) clearInterval(timerInterval);
+                timerInterval = setInterval(() => {
+                    if (!isPaused) {
+                        timeLeft--;
+                        timerDisplay.textContent = `⏳ ${timeLeft}s`;
+                        if (timeLeft <= 0) endGame();
+                    }
+                }, 1000);
+            }
+
+            function togglePause() {
+                if (gamePlayArea.classList.contains('hidden')) return;
+                isPaused = !isPaused;
+                if (isPaused) {
+                    showView(pauseOverlay);
+                    document.getElementById('pause-button').innerHTML = '<i class="fas fa-play"></i> 繼續';
+                } else {
+                    showView(gamePlayArea);
+                    document.getElementById('pause-button').innerHTML = '<i class="fas fa-pause"></i> 暫停';
+                }
+            }
+
+            function startGame(level) {
+                clearInterval(timerInterval);
+                timeLeft = 60;
+                currentScore = 0;
+                currentCombo = 0;
+                totalQuestions = 0;
+                correctQuestions = 0;
+                questionHistory = [];
+                lastGenerator = null;
+                isPaused = false;
+                
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                timerDisplay.textContent = `⏳ ${timeLeft}s`;
+                scoreDisplay.textContent = `得分: ${currentScore}`;
+                comboDisplay.textContent = `連擊: ${currentCombo}`;
+
+                currentLevel = level;
+                showView(gamePlayArea);
+                startTimer();
+                generateQuestion(level);
+                answerInput.value = '';
+                answerInput.focus();
+            }
+
+            // ==============================
+            // 題庫設定與寫入 (加入豐富變化與新題型)
+            // ==============================
+            function setQA(questionHtml, svgContent, correctAns){
+                const ans = Number(correctAns);
+                questionText.innerHTML = questionHtml;
+                contextImage.innerHTML = svgContent;
+                const ansInt = Number.isFinite(ans) ? Math.trunc(ans) : 0;
+                questionText.dataset.correctAnswer = String(ansInt);
+
+                questionHistory.push({
+                    question: questionHtml.replace(/<br>/g, ', '),
+                    correct: String(ansInt),
+                    playerAnswer: null
+                });
+            }
+
+            // L1 題庫
+            function qPara_area(){ const base=scaleEven(8,24), height=scaleEven(6,14), correct=base*height, offset=clamp(height*2,25,70); return {html:`請計算平行四邊形面積：<br>底=${base}cm, 高=${height}cm。`, svg:svgWrap(`<polygon class="shape" points="${offset},170 330,170 ${330-offset},30 20,30"/><line class="height-line" x1="${330-offset}" y1="30" x2="${330-offset}" y2="170"/><text class="label" x="175" y="192" text-anchor="middle">底: ${base}cm</text><text class="label" x="${330-offset-10}" y="105" text-anchor="end" fill="#ff0000">高: ${height}cm</text>`), correct}; }
+            function qPara_findHeight(){ const base=scaleEven(8,24), height=scaleEven(6,14), area=base*height, correct=height, offset=clamp(height*2,25,70); return {html:`平行四邊形面積為 ${area} 平方cm，底為 ${base} cm，高是多少cm？`, svg:svgWrap(`<polygon class="shape" points="${offset},170 330,170 ${330-offset},30 20,30"/><line class="height-line" x1="${330-offset}" y1="30" x2="${330-offset}" y2="170"/><text class="label" x="175" y="192" text-anchor="middle">底: ${base}cm</text><text class="label" x="175" y="18" text-anchor="middle">面積: ${area} 平方cm</text><text class="label" x="${330-offset-10}" y="105" text-anchor="end" fill="#ff0000">高: ?</text>`), correct}; }
+            function qPara_findBase(){ const base=scaleEven(8,24), height=scaleEven(6,14), area=base*height, correct=base, offset=clamp(height*2,25,70); return {html:`平行四邊形面積為 ${area} 平方cm，高為 ${height} cm，底是多少cm？`, svg:svgWrap(`<polygon class="shape" points="${offset},170 330,170 ${330-offset},30 20,30"/><line class="height-line" x1="${330-offset}" y1="30" x2="${330-offset}" y2="170"/><text class="label" x="175" y="192" text-anchor="middle">底: ?</text><text class="label" x="175" y="18" text-anchor="middle">面積: ${area} 平方cm</text><text class="label" x="${330-offset-10}" y="105" text-anchor="end" fill="#ff0000">高: ${height}cm</text>`), correct}; }
+            function qPara_ratio(){ const base=scaleEven(8,18), h1=scaleEven(4,10); let kArray = currentDifficulty === '簡單' ? [2,3] : [3,4,5,6]; const k=pick(kArray), h2=h1*k, offset1=clamp(h1*2,20,60), offset2=clamp(h2*1,25,70); return {html:`甲、乙平行四邊形底相等。乙的高是甲的 ${k} 倍，乙面積是甲的幾倍？`, svg:svgWrap(`<polygon class="shape" points="${offset1},170 160,170 ${160-offset1},60 20,60"/><line class="height-line" x1="${160-offset1}" y1="60" x2="${160-offset1}" y2="170"/><text class="label" x="90" y="190" text-anchor="middle">甲 底:${base}cm</text><text class="label" x="${160-offset1}" y="120" text-anchor="end" fill="#ff0000">高:${h1}cm</text><polygon class="shape2" points="${200+offset2},170 330,170 ${330-offset2},30 200,30"/><line class="height-line" x1="${330-offset2}" y1="30" x2="${330-offset2}" y2="170"/><text class="label" x="265" y="190" text-anchor="middle">乙 底:${base}cm</text><text class="label" x="${330-offset2}" y="105" text-anchor="end" fill="#ff0000">高:${h2}cm</text>`), correct:k}; }
+            
+            // L2 題庫
+            function qTri_area(){ const base=scaleEven(8,24), height=scale(6,16); return {html:`請計算三角形面積：<br>底=${base}cm, 高=${height}cm。`, svg:svgWrap(`<polygon class="shape" points="20,170 330,170 175,30"/><line class="height-line" x1="175" y1="30" x2="175" y2="170"/><text class="label" x="175" y="192" text-anchor="middle">底: ${base}cm</text><text class="label" x="185" y="105" fill="#ff0000">高: ${height}cm</text>`), correct:(base*height)/2}; }
+            function qTri_findHeight(){ const base=scaleEven(8,24), height=scale(6,16), area=(base*height)/2; return {html:`三角形面積為 ${area} 平方cm，底為 ${base} cm，高是多少cm？`, svg:svgWrap(`<polygon class="shape" points="20,170 330,170 175,30"/><line class="height-line" x1="175" y1="30" x2="175" y2="170"/><text class="label" x="175" y="192" text-anchor="middle">底: ${base}cm</text><text class="label" x="175" y="18" text-anchor="middle">面積: ${area} 平方cm</text><text class="label" x="185" y="105" fill="#ff0000">高: ?</text>`), correct:height}; }
+            function qTri_findBase(){ const height=scale(6,16), base=scaleEven(8,24), area=(base*height)/2; return {html:`三角形面積為 ${area} 平方cm，高為 ${height} cm，底是多少cm？`, svg:svgWrap(`<polygon class="shape" points="20,170 330,170 175,30"/><line class="height-line" x1="175" y1="30" x2="175" y2="170"/><text class="label" x="175" y="192" text-anchor="middle">底: ?</text><text class="label" x="175" y="18" text-anchor="middle">面積: ${area} 平方cm</text><text class="label" x="185" y="105" fill="#ff0000">高: ${height}cm</text>`), correct:base}; }
+            function qTri_multiplier(){ let kArray = currentDifficulty === '簡單' ? [2,3] : [3,4,5]; const a=pick(kArray), b=pick(kArray); return {html:`三角形的底變成 ${a} 倍，高變成 ${b} 倍，面積變成幾倍？`, svg:svgWrap(`<polygon class="shape" points="30,170 160,170 95,60"/><line class="height-line" x1="95" y1="60" x2="95" y2="170"/><text class="label" x="95" y="192" text-anchor="middle">原來</text><polygon class="shape2" points="190,170 330,170 260,30"/><line class="height-line" x1="260" y1="30" x2="260" y2="170"/><text class="label" x="260" y="192" text-anchor="middle">改變後</text>`), correct:a*b}; }
+            
+            // L3 題庫
+            function qTrap_area(){ const top=scaleEven(6,18), bottom=scaleEven(14,28), h=scaleEven(6,16); return {html:`請計算梯形面積：<br>上底=${top}cm, 下底=${bottom}cm, 高=${h}cm。`, svg:svgWrap(`<polygon class="shape" points="70,40 280,40 320,170 30,170"/><line class="height-line" x1="175" y1="40" x2="175" y2="170"/><text class="label" x="175" y="30" text-anchor="middle">上底: ${top}cm</text><text class="label" x="175" y="192" text-anchor="middle">下底: ${bottom}cm</text><text class="label" x="185" y="110" fill="#ff0000">高: ${h}cm</text>`), correct:(top+bottom)*h/2}; }
+            function qTrap_findTop(){ const top=scaleEven(6,16), bottom=scaleEven(18,30), h=scaleEven(6,16), area=(top+bottom)*h/2; return {html:`梯形面積為 ${area} 平方cm，下底為 ${bottom} cm，高為 ${h} cm，上底是多少cm？`, svg:svgWrap(`<polygon class="shape" points="70,40 280,40 320,170 30,170"/><line class="height-line" x1="175" y1="40" x2="175" y2="170"/><text class="label" x="175" y="192" text-anchor="middle">下底: ${bottom}cm</text><text class="label" x="185" y="110" fill="#ff0000">高: ${h}cm</text><text class="label" x="175" y="30" text-anchor="middle">上底: ?</text><text class="label" x="175" y="18" text-anchor="middle">面積: ${area} 平方cm</text>`), correct:top}; }
+            function qTrap_findBottom(){ const top=scaleEven(6,16), bottom=scaleEven(18,30), h=scaleEven(6,16), area=(top+bottom)*h/2; return {html:`梯形面積為 ${area} 平方cm，上底為 ${top} cm，高為 ${h} cm，下底是多少cm？`, svg:svgWrap(`<polygon class="shape" points="70,40 280,40 320,170 30,170"/><line class="height-line" x1="175" y1="40" x2="175" y2="170"/><text class="label" x="175" y="192" text-anchor="middle">下底: ?</text><text class="label" x="185" y="110" fill="#ff0000">高: ${h}cm</text><text class="label" x="175" y="30" text-anchor="middle">上底: ${top}cm</text><text class="label" x="175" y="18" text-anchor="middle">面積: ${area} 平方cm</text>`), correct:bottom}; }
+            function qTrap_multiplier(){ let kArray = currentDifficulty === '簡單' ? [2,3] : [3,4,5,6]; const k=pick(kArray); return {html:`梯形的上下底不變，高變成原來的 ${k} 倍，面積變成幾倍？`, svg:svgWrap(`<polygon class="shape" points="60,60 170,60 200,170 30,170"/><line class="height-line" x1="115" y1="60" x2="115" y2="170"/><text class="label" x="115" y="192" text-anchor="middle">原來</text><polygon class="shape2" points="210,30 330,30 340,170 190,170"/><line class="height-line" x1="265" y1="30" x2="265" y2="170"/><text class="label" x="265" y="192" text-anchor="middle">高變成 ${k} 倍</text>`), correct:k}; }
+            
+            // L4 題庫
+            function qMix_trapPlusTri(){ const Ta=scaleEven(6,12), Tb=scaleEven(14,24), Th=scaleEven(4,10), TriH=scaleEven(6,14); return {html:`求複合圖形總面積：<br>梯形(上底${Ta}、下底${Tb}、高${Th}) 與共用底的三角形(高${TriH}) 組成。`, svg:svgWrap(`<polygon class="shape2" points="90,30 260,30 305,95 45,95"/><polygon class="shape" points="45,95 305,95 175,175"/><line class="height-line" x1="175" y1="30" x2="175" y2="95"/><line class="height-line" x1="175" y1="95" x2="175" y2="175"/><text class="label" x="175" y="24" text-anchor="middle">梯形 上底:${Ta}cm</text><text class="label" x="175" y="115" text-anchor="middle">共用底:${Tb}cm</text><text class="label" x="185" y="70" fill="#ff0000">梯高:${Th}cm</text><text class="label" x="185" y="150" fill="#ff0000">三高:${TriH}cm</text>`), correct:((Ta+Tb)*Th/2)+(Tb*TriH/2)}; }
+            function qMix_rectMinusTri(){ const W=scaleMult(20,60,4), H=scaleEven(20,50), triBase=scaleMult(10,Math.min(30* (currentDifficulty==='簡單'?1:3),W-8),2); return {html:`求鋪色部分面積：<br>長方形 ${W}×${H}cm，挖掉一直角三角形(底${triBase}cm，高${H}cm)。`, svg:svgWrap(`<rect x="40" y="35" width="270" height="140" class="shape2"/><polygon points="40,175 ${40+((triBase/W)*270>270?270:(triBase/W)*270)},175 40,35" class="cutout"/><text class="label" x="175" y="30" text-anchor="middle">長方形：${W}cm × ${H}cm</text><text class="label" x="175" y="192" text-anchor="middle">挖掉三角形 底:${triBase}cm 高:${H}cm</text>`), correct:(W*H)-(triBase*H/2)}; }
+            function qMix_paraMinusTri(){ const base=scaleEven(20,40), height=scaleEven(12,24), cutBase=scaleEven(6,16), cutHeight=scaleEven(6,height), offset=clamp(height*1.5,25,70); return {html:`求鋪色部分面積：<br>平行四邊形 底${base}cm、高${height}cm，挖掉三角形(底${cutBase}cm、高${cutHeight}cm)。`, svg:svgWrap(`<polygon class="shape" points="${offset},175 330,175 ${330-offset},35 20,35"/><polygon class="cutout" points="${330-offset},35 ${330-offset},${35+(cutHeight/height)*140} ${330-offset-(cutBase/base)*260},${35+(cutHeight/height)*140}"/><line class="height-line" x1="${330-offset}" y1="35" x2="${330-offset}" y2="175"/><text class="label" x="175" y="192" text-anchor="middle">底:${base}cm</text><text class="label" x="${330-offset-10}" y="110" text-anchor="end" fill="#ff0000">高:${height}cm</text><text class="label" x="175" y="20" text-anchor="middle">挖掉 底:${cutBase} 高:${cutHeight}</text>`), correct:(base*height)-(cutBase*cutHeight/2)}; }
+            function qMix_trapMinus2Rect(){ const top=scaleEven(16,26), bottom=top+scaleEven(8,16), h=scaleEven(10,18), cutW=scaleEven(2,6); return {html:`求鋪色部分面積：<br>梯形(上底${top}、下底${bottom}、高${h})，兩側各切掉長方形(${cutW}×${h})。`, svg:svgWrap(`<polygon class="shape2" points="75,45 275,45 320,175 30,175"/><rect x="30" y="45" width="${(cutW/bottom)*290}" height="130" class="cutout"/><rect x="${320-(cutW/bottom)*290}" y="45" width="${(cutW/bottom)*290}" height="130" class="cutout"/><line class="height-line" x1="175" y1="45" x2="175" y2="175"/><text class="label" x="175" y="30" text-anchor="middle">上底:${top} 下底:${bottom}</text><text class="label" x="185" y="115" fill="#ff0000">高:${h}cm</text><text class="label" x="175" y="192" text-anchor="middle">各切掉：${cutW}×${h}</text>`), correct:((top+bottom)*h/2)-(2*cutW*h)}; }
+            function qMix_2Triangles(){ const b=scaleEven(10,30), h1=scaleEven(6,14), h2=scaleEven(6,14); return {html:`求複合圖形(箏形/任意四邊形)面積：<br>對角線(共用底)=${b}cm，兩側高分別為 ${h1}cm 與 ${h2}cm。`, svg:svgWrap(`<polygon class="shape" points="40,100 310,100 175,30"/><polygon class="shape2" points="40,100 310,100 175,170"/><line class="height-line" x1="40" y1="100" x2="310" y2="100"/><line class="height-line" x1="175" y1="30" x2="175" y2="100"/><line class="height-line" x1="175" y1="100" x2="175" y2="170"/><text class="label" x="120" y="95" text-anchor="middle">共用底: ${b}cm</text><text class="label" x="185" y="65" fill="#ff0000">h1: ${h1}cm</text><text class="label" x="185" y="145" fill="#ff0000">h2: ${h2}cm</text>`), correct:(b*h1/2)+(b*h2/2)}; }
+            function qMix_rectPlusTrap(){ const rw=scaleEven(14,24), rh=scaleEven(8,16), th=scaleEven(6,12), t_top=rw, t_bot=rw+scaleEven(6,14); return {html:`求複合圖形面積：<br>上方為長方形(${rw}×${rh})，下方連接梯形(高${th}，下底${t_bot})。`, svg:svgWrap(`<rect x="100" y="20" width="150" height="70" class="shape"/><polygon class="shape2" points="100,90 250,90 290,170 60,170"/><line class="height-line" x1="175" y1="90" x2="175" y2="170"/><text class="label" x="175" y="55" text-anchor="middle">長方形 ${rw}×${rh}</text><text class="label" x="175" y="185" text-anchor="middle">梯形下底: ${t_bot}</text><text class="label" x="185" y="130" fill="#ff0000">高: ${th}</text>`), correct:(rw*rh)+((t_top+t_bot)*th/2)}; }
+
+            // 實作不重複隨機選題
+            function generateQuestion(level) {
+                let pool = [];
+                if (level === 1) pool = [qPara_area, qPara_findHeight, qPara_findBase, qPara_ratio];
+                else if (level === 2) pool = [qTri_area, qTri_findHeight, qTri_findBase, qTri_multiplier];
+                else if (level === 3) pool = [qTrap_area, qTrap_findTop, qTrap_findBottom, qTrap_multiplier];
+                else if (level === 4) pool = [qMix_trapPlusTri, qMix_rectMinusTri, qMix_paraMinusTri, qMix_trapMinus2Rect, qMix_2Triangles, qMix_rectPlusTrap];
+                
+                // 避免連續出同一題型
+                let availablePool = pool.filter(g => g !== lastGenerator);
+                if (availablePool.length === 0) availablePool = pool; 
+                
+                let gen = pick(availablePool);
+                lastGenerator = gen;
+
+                let pack = gen();
+                let attempts = 0;
+                let questionStr = pack.html.replace(/<br>/g, ', ');
+                
+                // 迴圈檢查是否與歷史紀錄重複，確保每局都不一樣
+                while (questionHistory.some(q => q.question === questionStr) && attempts < 15) {
+                    gen = pick(availablePool);
+                    lastGenerator = gen;
+                    pack = gen();
+                    questionStr = pack.html.replace(/<br>/g, ', ');
+                    attempts++;
+                }
+                
+                setQA(pack.html, pack.svg, pack.correct);
+            }
+
+            function checkAnswer(playerAnswer) {
+                if (isPaused) return;
+
+                totalQuestions++;
+                const roundedPlayerAnswer = Math.trunc(Number(playerAnswer));
+                const correctAns = Number(questionText.dataset.correctAnswer);
+                const lastQIndex = questionHistory.length - 1;
+
+                if (roundedPlayerAnswer === correctAns) {
+                    correctQuestions++;
+                    currentCombo++;
+                    timeLeft += 5;
+                    const comboMultiplier = 1 + Math.min(currentCombo, 5) * 0.1;
+                    const points = 10 * comboMultiplier;
+                    currentScore += Math.round(points);
+
+                    document.getElementById('feedback-message').textContent = `✅ 答對了！+${Math.round(points)}分, 時間+5秒！`;
+                    document.getElementById('feedback-message').className = 'feedback correct';
+                    
+                    triggerMascot(true); // 呼叫答對加油
+                } else {
+                    currentCombo = 0;
+                    timeLeft -= 5;
+                    document.getElementById('feedback-message').textContent = `❌ 答錯了！-5秒！正確答案是 ${correctAns}。`;
+                    document.getElementById('feedback-message').className = 'feedback incorrect';
+                    
+                    triggerMascot(false); // 呼叫答錯安慰
+                }
+                
+                questionHistory[lastQIndex].playerAnswer = String(roundedPlayerAnswer);
+
+                scoreDisplay.textContent = `得分: ${currentScore}`;
+                comboDisplay.textContent = `連擊: ${currentCombo}`;
+                timerDisplay.textContent = `⏳ ${timeLeft}s`;
+                answerInput.value = '';
+                
+                // 答完清除白板，方便下一題
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                setTimeout(() => {
+                    document.getElementById('feedback-message').textContent = '';
+                    if (timeLeft > 0) generateQuestion(currentLevel);
+                    else endGame();
+                }, 1500);
+            }
+
+            function calculateStars(score) {
+                if (score >= STAR_THRESHOLD[3]) return 3;
+                if (score >= STAR_THRESHOLD[2]) return 2;
+                if (score >= STAR_THRESHOLD[1]) return 1;
+                return 0;
+            }
+
+            function endGame() {
+                clearInterval(timerInterval);
+                const finalStars = calculateStars(currentScore);
+                const starSymbols = '★'.repeat(finalStars) + '☆'.repeat(3 - finalStars);
+
+                // 更新復盤數據
+                const wrongQuestions = totalQuestions - correctQuestions;
+                document.getElementById('final-stats').innerHTML = `
+                    <div style="display:flex; justify-content:space-around; text-align:center; flex-wrap:wrap; gap:10px;">
+                        <div><strong style="font-size:1.5em; color:var(--primary-color);">${currentScore}</strong><br><span style="font-size:0.9em;">總得分</span></div>
+                        <div><strong style="font-size:1.5em; color:green;">${correctQuestions}</strong> / ${totalQuestions}<br><span style="font-size:0.9em;">答對題數</span></div>
+                        <div><strong style="font-size:1.5em; color:red;">${wrongQuestions}</strong> / ${totalQuestions}<br><span style="font-size:0.9em;">答錯題數</span></div>
+                    </div>
+                `;
+
+                document.getElementById('final-stars').textContent = starSymbols;
+                document.getElementById('star-message').textContent = finalStars === 3 ? '🎉 恭喜！三顆星專家！' : (finalStars > 0 ? '表現不錯，繼續挑戰！' : '下次會更好！');
+
+                const answerDisplay = document.getElementById('correct-answer-display');
+                answerDisplay.innerHTML = '<h4>本局題目回顧：</h4>';
+                questionHistory.forEach((item, index) => {
+                    const isCorrect = (item.playerAnswer === item.correct);
+                    answerDisplay.innerHTML += `<p style="color: ${isCorrect ? 'green' : 'red'}; margin:5px 0;">Q${index + 1}: ${item.question} <br>➤ 您的答案: ${item.playerAnswer} | **正確答案: ${item.correct}**</p>`;
+                });
+
+                updateLeaderboard(playerName, currentScore, finalStars, currentLevel, currentDifficulty, totalQuestions);
+                showView(resultModal);
+            }
+
+            // == 排行榜系統 (保留前10名並新增資訊) ==
+            function getLeaderboard() {
+                try { return JSON.parse(localStorage.getItem('jessieMathAreaLeaderboard')) || []; } catch { return []; }
+            }
+
+            function updateLeaderboard(name, score, stars, level, difficulty, totalQ) {
+                const leaderboard = getLeaderboard();
+                const now = new Date();
+                const dateStr = `${now.getMonth()+1}/${now.getDate()} ${now.getHours()}:${String(now.getMinutes()).padStart(2,'0')}`;
+                
+                leaderboard.push({ name, score, stars, date: dateStr, level, difficulty, total: totalQ });
+                leaderboard.sort((a, b) => b.score - a.score);
+                
+                const topTen = leaderboard.slice(0, 10); // 只取前10名
+                localStorage.setItem('jessieMathAreaLeaderboard', JSON.stringify(topTen));
+                renderLeaderboard();
+            }
+
+            function renderLeaderboard() {
+                const leaderboardList = document.getElementById('leaderboard-list');
+                const data = getLeaderboard();
+                if (!leaderboardList) return;
+
+                leaderboardList.innerHTML = '';
+                const rankIcons = ['🥇', '🥈', '🥉'];
+
+                data.forEach((item, index) => {
+                    const icon = index < 3 ? rankIcons[index] : '🎖️';
+                    const diff = item.difficulty || '未記錄';
+                    const tot = item.total || '-';
+
+                    const listItem = document.createElement('li');
+                    listItem.innerHTML = `
+                        <div class="lb-row-top">
+                            <span>${icon} 第${index + 1}名 | ${item.name}</span>
+                            <span style="color:#e67e22;">${item.score} 分</span>
+                        </div>
+                        <div class="lb-row-mid">
+                            <span>關卡: L${item.level} | 難度: ${diff}</span>
+                            <span>總題數: ${tot} 題</span>
+                        </div>
+                        <div class="lb-row-bot">
+                            <span style="color:gold; font-size:1.1em;">${'★'.repeat(item.stars)}${'☆'.repeat(3 - item.stars)}</span>
+                            <span style="color:#999; font-size:0.85em;">${item.date}</span>
+                        </div>
+                    `;
+                    leaderboardList.appendChild(listItem);
+                });
+            }
+
+            // == 事件綁定 ==
+            document.getElementById('start-game-button').addEventListener('click', () => {
+                playerName = playerNameInput.value.trim();
+                if (playerName) showView(levelSelection);
+                else alert('請輸入您的名字！');
+            });
+
+            document.querySelectorAll('.difficulty-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    document.querySelectorAll('.difficulty-btn').forEach(b => b.classList.remove('active'));
+                    e.currentTarget.classList.add('active');
+                    currentDifficulty = e.currentTarget.textContent;
+                });
+            });
+
+            document.querySelectorAll('.level-card').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const level = parseInt(e.currentTarget.dataset.level);
+                    if (!isNaN(level)) startGame(level);
+                });
+            });
+
+            document.getElementById('show-leaderboard-btn').addEventListener('click', () => {
+                renderLeaderboard();
+                showView(leaderboardView);
+            });
+            document.getElementById('back-from-leaderboard').addEventListener('click', () => showView(levelSelection));
+
+            document.getElementById('pause-button').addEventListener('click', togglePause);
+            document.getElementById('resume-button').addEventListener('click', togglePause);
+            document.getElementById('reset-button').addEventListener('click', () => {
+                if (confirm('確定要重新開始本關卡嗎？分數將歸零。')) startGame(currentLevel);
+            });
+            document.getElementById('exit-button').addEventListener('click', () => {
+                if (confirm('確定要離開回關卡主選單嗎？')) {
+                    clearInterval(timerInterval);
+                    showView(levelSelection);
+                }
+            });
+
+            submitButton.addEventListener('click', () => {
+                const answer = parseFloat(answerInput.value);
+                if (!isNaN(answer)) checkAnswer(answer); else alert('請輸入有效的數字答案！');
+            });
+            answerInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') submitButton.click(); });
+            document.getElementById('back-to-select').addEventListener('click', () => showView(levelSelection));
+
+            // 初始載入
+            showView(startModal);
+        };
+    </script>
+</body>
+</html>
